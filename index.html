@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GLITCHLABS.SYSTEMS :: RECOVERY TERMINAL</title>
-<meta name="description" content="Autonomous fabrication system recovered after centuries of unattended operation.">
+<meta name="description" content="Autonomous fabrication archive. Recovered after 512 years of unattended operation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #050507;
@@ -34,7 +34,7 @@
   html, body {
     background: var(--bg-deep);
     color: var(--phosphor);
-    font-family: 'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+    font-family: 'Share Tech Mono', monospace;
     min-height: 100vh;
     overflow-x: hidden;
     cursor: crosshair;
@@ -49,57 +49,89 @@
       var(--bg-deep);
   }
 
-  /* CRT scanlines - tighter, more degraded */
+  /* CRT scanlines */
   body::before {
     content: '';
     position: fixed; inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(200,196,184,0.04) 0,
-      rgba(200,196,184,0.04) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-    pointer-events: none;
-    z-index: 9999;
+    background: repeating-linear-gradient(0deg, rgba(200,196,184,0.04) 0, rgba(200,196,184,0.04) 1px, transparent 1px, transparent 2px);
+    pointer-events: none; z-index: 9999;
     animation: scanDrift 12s linear infinite;
   }
 
   @keyframes scanDrift {
-    0% { background-position: 0 0; transform: translateY(0); }
-    50% { transform: translateY(0.5px); }
-    100% { background-position: 0 3px; transform: translateY(0); }
+    0% { background-position: 0 0; }
+    100% { background-position: 0 3px; }
   }
 
-  /* Heavier CRT vignette */
   body::after {
     content: '';
     position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.85) 100%),
-      linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
-    pointer-events: none;
-    z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none; z-index: 9998;
   }
 
-  /* Subtle phosphor flicker */
-  @keyframes flicker {
-    0%, 92%, 100% { opacity: 1; }
-    93% { opacity: 0.88; }
-    94% { opacity: 0.96; }
-    95% { opacity: 0.82; }
-    96% { opacity: 0.94; }
-  }
-
-  @keyframes flickerSlow {
+  /* ━━━━━━━━ POWER FLICKER ━━━━━━━━ */
+  /* Whole-page brightness flicker - simulates failing power, no movement */
+  @keyframes powerFlicker {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.94; }
+    8% { opacity: 1; }
+    8.5% { opacity: 0.4; }
+    9% { opacity: 1; }
+    14% { opacity: 1; }
+    14.3% { opacity: 0.7; }
+    14.6% { opacity: 1; }
+    34% { opacity: 1; }
+    34.3% { opacity: 0.2; }
+    34.5% { opacity: 0.9; }
+    34.8% { opacity: 1; }
+    62% { opacity: 1; }
+    62.4% { opacity: 0.5; }
+    62.6% { opacity: 1; }
+    87% { opacity: 1; }
+    87.3% { opacity: 0.3; }
+    87.6% { opacity: 0.85; }
+    87.9% { opacity: 1; }
   }
 
-  /* Phosphor base text style */
-  .phosphor {
-    color: var(--phosphor);
-    text-shadow: 0 0 1px rgba(200,196,184,0.4);
+  /* Sharp single-frame blackouts */
+  @keyframes brownout {
+    0%, 100% { filter: brightness(1); }
+    23% { filter: brightness(1); }
+    23.2% { filter: brightness(0.15); }
+    23.4% { filter: brightness(1); }
+    71% { filter: brightness(1); }
+    71.3% { filter: brightness(0.3); }
+    71.5% { filter: brightness(1); }
+  }
+
+  /* Individual element flicker - faster, more erratic */
+  @keyframes elemFlicker {
+    0%, 100% { opacity: 1; }
+    19% { opacity: 1; }
+    19.2% { opacity: 0.3; }
+    19.4% { opacity: 1; }
+    44% { opacity: 1; }
+    44.2% { opacity: 0.55; }
+    44.5% { opacity: 1; }
+    78% { opacity: 1; }
+    78.3% { opacity: 0.25; }
+    78.6% { opacity: 1; }
+  }
+
+  /* Subsystem instability - amber elements */
+  @keyframes amberFlicker {
+    0%, 100% { opacity: 1; text-shadow: 0 0 4px var(--amber-glow); }
+    11% { opacity: 1; }
+    11.2% { opacity: 0.4; text-shadow: none; }
+    11.4% { opacity: 1; text-shadow: 0 0 4px var(--amber-glow); }
+    56% { opacity: 1; }
+    56.3% { opacity: 0.6; }
+    56.6% { opacity: 1; }
+  }
+
+  /* Apply page-wide power flicker */
+  body {
+    animation: powerFlicker 11s steps(1) infinite, brownout 17s steps(1) infinite;
   }
 
   /* ━━━━━━━━ TOP STATUS BAR ━━━━━━━━ */
@@ -116,13 +148,13 @@
     flex-wrap: wrap;
     gap: 12px;
     background: rgba(0,0,0,0.6);
-    animation: flicker 14s steps(1) infinite;
+    animation: elemFlicker 9s steps(1) infinite;
   }
 
   .top-bar .left, .top-bar .right { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
   .top-bar .amber { color: var(--amber); }
   .top-bar .green { color: var(--green); }
-  .top-bar .red { color: var(--red); }
+  .top-bar .red { color: var(--red); animation: amberFlicker 13s steps(1) infinite; }
   .top-bar .cyan { color: var(--cyan); }
   .top-bar .sep { color: var(--phosphor-faint); }
 
@@ -140,29 +172,11 @@
 
   .recovery-header .line { opacity: 0; }
   .recovery-header .line.on { opacity: 1; }
-
-  .recovery-header .label {
-    color: var(--phosphor-dim);
-    display: inline-block;
-    min-width: 220px;
-  }
-
+  .recovery-header .label { color: var(--phosphor-dim); display: inline-block; min-width: 220px; }
   .recovery-header .status-ok { color: var(--green); }
-  .recovery-header .status-warn { color: var(--warning); }
-  .recovery-header .status-fail { color: var(--red); }
+  .recovery-header .status-warn { color: var(--warning); animation: amberFlicker 8s steps(1) infinite; }
+  .recovery-header .status-fail { color: var(--red); animation: elemFlicker 6s steps(1) infinite; }
   .recovery-header .status-cold { color: var(--cyan); }
-
-  /* Corruption styling */
-  .corrupt {
-    color: var(--phosphor-faint);
-    letter-spacing: 0.05em;
-  }
-
-  .corrupt::before {
-    content: '▒▒▒▒▒▒▒▒▒▒';
-    margin-right: 6px;
-    opacity: 0.6;
-  }
 
   /* ━━━━━━━━ MAIN GRID ━━━━━━━━ */
   .main {
@@ -173,21 +187,19 @@
     min-height: calc(100vh - 320px);
   }
 
-  /* ━━━━━━━━ TERMINAL PANEL (LEFT) ━━━━━━━━ */
+  /* ━━━━━━━━ TERMINAL PANEL ━━━━━━━━ */
   .terminal {
     border: 1px solid var(--rune);
     border-right: none;
     padding: 20px 24px;
     background: rgba(5,5,7,0.92);
     position: relative;
-    animation: flicker 18s steps(1) infinite;
+    animation: elemFlicker 23s steps(1) infinite;
   }
 
-  /* Panel header tag */
   .panel-tag {
     position: absolute;
-    top: -1px;
-    left: 16px;
+    top: -1px; left: 16px;
     background: var(--bg);
     padding: 0 10px;
     font-size: 9px;
@@ -198,11 +210,9 @@
     border: 1px solid var(--rune);
   }
 
-  /* Archive stamp - top right of panel */
   .archive-stamp {
     position: absolute;
-    top: 12px;
-    right: 16px;
+    top: 12px; right: 16px;
     font-size: 9px;
     color: var(--red);
     text-transform: uppercase;
@@ -212,6 +222,7 @@
     opacity: 0.6;
     transform: rotate(-2deg);
     background: rgba(138,58,42,0.05);
+    animation: elemFlicker 19s steps(1) infinite;
   }
 
   /* ━━━━━━━━ LOGO ━━━━━━━━ */
@@ -229,31 +240,31 @@
     letter-spacing: 0.08em;
     color: var(--phosphor);
     text-transform: uppercase;
-    text-shadow:
-      0 0 4px rgba(200,196,184,0.5),
-      0 0 12px rgba(200,196,184,0.2);
+    text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2);
     opacity: 0;
-    transform: scale(0.98);
-    transition: opacity 1s ease-out, transform 1s ease-out;
+    transition: opacity 1s ease-out;
     position: relative;
   }
 
   .logo.on {
     opacity: 1;
-    transform: scale(1);
-    animation: flickerSlow 5s steps(1) infinite;
+    animation: logoFlicker 7s steps(1) infinite;
   }
 
-  /* Character corruption inside logo */
-  .logo .corrupt-char {
-    display: inline-block;
-    animation: charCorrupt 7s steps(1) infinite;
-  }
-
-  @keyframes charCorrupt {
-    0%, 97%, 100% { content: 'g'; opacity: 1; }
-    98% { opacity: 0.3; transform: translateX(1px); }
-    99% { opacity: 0.7; }
+  /* Logo-specific aggressive flicker */
+  @keyframes logoFlicker {
+    0%, 100% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
+    13% { opacity: 1; }
+    13.3% { opacity: 0.2; text-shadow: none; }
+    13.6% { opacity: 0.7; }
+    13.9% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
+    47% { opacity: 1; }
+    47.4% { opacity: 0.4; }
+    47.7% { opacity: 1; }
+    82% { opacity: 1; }
+    82.3% { opacity: 0.15; text-shadow: none; }
+    82.5% { opacity: 0.6; text-shadow: 0 0 2px rgba(200,196,184,0.3); }
+    82.8% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
   }
 
   .logo-meta {
@@ -267,7 +278,6 @@
   }
 
   .logo-meta.on { opacity: 1; }
-
   .logo-meta .amber { color: var(--amber); }
   .logo-meta .sep { color: var(--phosphor-faint); margin: 0 6px; }
 
@@ -286,10 +296,9 @@
   }
 
   .slogan.on { opacity: 1; }
-
   .slogan .phosphor { color: var(--phosphor); }
 
-  /* ━━━━━━━━ SECTION DIVIDERS ━━━━━━━━ */
+  /* ━━━━━━━━ DIVIDERS ━━━━━━━━ */
   .divider {
     display: flex;
     align-items: center;
@@ -305,19 +314,13 @@
   .divider.on { opacity: 1; }
 
   .divider::before {
-    content: '';
-    flex: 0 0 16px;
-    height: 1px;
-    background: var(--rune);
-    margin-right: 12px;
+    content: ''; flex: 0 0 16px; height: 1px;
+    background: var(--rune); margin-right: 12px;
   }
 
   .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--rune);
-    margin-left: 12px;
+    content: ''; flex: 1; height: 1px;
+    background: var(--rune); margin-left: 12px;
   }
 
   /* ━━━━━━━━ DATA BLOCKS ━━━━━━━━ */
@@ -326,11 +329,10 @@
     font-size: 12px;
     line-height: 1.6;
     opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition: opacity 0.5s ease-out;
   }
 
-  .data-block.on { opacity: 1; transform: translateY(0); }
+  .data-block.on { opacity: 1; }
 
   .data-block .header {
     color: var(--amber);
@@ -340,19 +342,11 @@
     margin-bottom: 6px;
     border-bottom: 1px dashed var(--rune);
     padding-bottom: 4px;
+    animation: amberFlicker 15s steps(1) infinite;
   }
 
-  .data-block .body {
-    color: var(--phosphor);
-    padding-left: 4px;
-  }
-
-  .data-block .row {
-    display: flex;
-    gap: 12px;
-    line-height: 1.7;
-  }
-
+  .data-block .body { color: var(--phosphor); padding-left: 4px; }
+  .data-block .row { display: flex; gap: 12px; line-height: 1.7; }
   .data-block .key {
     min-width: 130px;
     color: var(--phosphor-dim);
@@ -360,18 +354,18 @@
     letter-spacing: 0.1em;
     font-size: 11px;
   }
-
-  .data-block .val {
-    flex: 1;
-    color: var(--phosphor);
-    font-size: 12px;
-  }
-
+  .data-block .val { flex: 1; color: var(--phosphor); font-size: 12px; }
   .data-block .val.amber { color: var(--amber); }
   .data-block .val.green { color: var(--green); }
   .data-block .val.warn { color: var(--warning); }
   .data-block .val.cyan { color: var(--cyan); }
-  .data-block .val.red { color: var(--red); }
+  .data-block .val.red { color: var(--red); animation: elemFlicker 11s steps(1) infinite; }
+
+  .corrupt {
+    color: var(--phosphor-faint);
+    letter-spacing: 0.05em;
+    animation: elemFlicker 4s steps(1) infinite;
+  }
 
   /* ━━━━━━━━ FUSION STATUS PANEL ━━━━━━━━ */
   .fusion-panel {
@@ -382,6 +376,7 @@
     font-size: 11px;
     opacity: 0;
     transition: opacity 0.7s ease-out;
+    animation: elemFlicker 21s steps(1) infinite;
   }
 
   .fusion-panel.on { opacity: 1; }
@@ -397,14 +392,10 @@
     gap: 8px;
   }
 
-  .fusion-panel .header::before {
-    content: '◢';
-    color: var(--amber);
-  }
+  .fusion-panel .header::before { content: '◢'; color: var(--amber); }
 
   .fusion-panel .header .pulse {
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     background: var(--amber);
     border-radius: 50%;
     box-shadow: 0 0 6px var(--amber);
@@ -427,35 +418,24 @@
   }
 
   .fusion-panel .row:last-child { border-bottom: none; }
-
-  .fusion-panel .row .label {
-    color: var(--phosphor-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .fusion-panel .row .val {
-    color: var(--phosphor);
-    font-family: 'Share Tech Mono', monospace;
-  }
-
+  .fusion-panel .row .label { color: var(--phosphor-dim); text-transform: uppercase; letter-spacing: 0.12em; }
+  .fusion-panel .row .val { color: var(--phosphor); }
   .fusion-panel .row .val.green { color: var(--green); }
-  .fusion-panel .row .val.warn { color: var(--warning); }
-  .fusion-panel .row .val.red { color: var(--red); }
+  .fusion-panel .row .val.warn { color: var(--warning); animation: amberFlicker 9s steps(1) infinite; }
+  .fusion-panel .row .val.red { color: var(--red); animation: elemFlicker 7s steps(1) infinite; }
 
-  /* ━━━━━━━━ ACCESS REQUEST FORM ━━━━━━━━ */
+  /* ━━━━━━━━ ACCESS FORM ━━━━━━━━ */
   .access {
     margin-top: 20px;
     padding: 16px;
     border: 1px solid var(--amber-dim);
     background: rgba(184,148,31,0.04);
     opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transition: opacity 0.7s ease-out;
     position: relative;
   }
 
-  .access.on { opacity: 1; transform: translateY(0); }
+  .access.on { opacity: 1; }
 
   .access-header {
     display: flex;
@@ -466,46 +446,17 @@
     border-bottom: 1px dashed var(--amber-dim);
   }
 
-  .access-header .title {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--amber);
-  }
-
-  .access-header .badge {
-    font-size: 9px;
-    color: var(--warning);
-    border: 1px solid var(--warning);
-    padding: 2px 8px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  .access-status {
-    font-size: 10px;
-    line-height: 1.8;
-    color: var(--phosphor-dim);
-    margin-bottom: 12px;
-  }
-
-  .access-status .label {
-    color: var(--amber);
-    margin-right: 6px;
-  }
-
+  .access-header .title { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--amber); }
+  .access-header .badge { font-size: 9px; color: var(--warning); border: 1px solid var(--warning); padding: 2px 8px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .access-status { font-size: 10px; line-height: 1.8; color: var(--phosphor-dim); margin-bottom: 12px; }
+  .access-status .label { color: var(--amber); margin-right: 6px; }
   .access-status .val { color: var(--phosphor); }
   .access-status .green { color: var(--green); }
 
-  .access-form {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+  .access-form { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .access-form input {
-    flex: 1;
-    min-width: 0;
+    flex: 1; min-width: 0;
     background: rgba(0,0,0,0.6);
     border: 1px solid var(--rune);
     color: var(--phosphor);
@@ -524,9 +475,7 @@
     background: rgba(184,148,31,0.03);
   }
 
-  .access-form input::placeholder {
-    color: var(--phosphor-faint);
-  }
+  .access-form input::placeholder { color: var(--phosphor-faint); }
 
   .access-form button {
     background: transparent;
@@ -560,7 +509,7 @@
 
   .access-confirm.show { display: block; }
 
-  /* ━━━━━━━━ TERMINAL FOOTER PROMPT ━━━━━━━━ */
+  /* ━━━━━━━━ TERMINAL PROMPT ━━━━━━━━ */
   .term-prompt {
     margin-top: 18px;
     font-size: 11px;
@@ -570,7 +519,6 @@
   }
 
   .term-prompt.on { opacity: 1; }
-
   .term-prompt .user { color: var(--green); }
   .term-prompt .path { color: var(--cyan); }
 
@@ -590,7 +538,7 @@
     51%, 100% { opacity: 0; }
   }
 
-  /* ━━━━━━━━ LANDSCAPE PANEL (RIGHT) ━━━━━━━━ */
+  /* ━━━━━━━━ LANDSCAPE PANEL ━━━━━━━━ */
   .landscape {
     border: 1px solid var(--rune);
     position: relative;
@@ -598,15 +546,14 @@
     opacity: 0;
     transition: opacity 1.4s ease-out 0.6s;
     background: #000;
+    animation: elemFlicker 27s steps(1) infinite;
   }
 
   .landscape.on { opacity: 1; }
 
-  /* Coordinate overlay - top left */
   .coords {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 12px; left: 12px;
     font-size: 9px;
     color: var(--phosphor-dim);
     letter-spacing: 0.12em;
@@ -621,11 +568,9 @@
   .coords .label { color: var(--phosphor-faint); }
   .coords .val { color: var(--phosphor); }
 
-  /* Scan readout - top right */
   .scan-readout {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 12px; right: 12px;
     font-size: 9px;
     color: var(--amber);
     letter-spacing: 0.2em;
@@ -636,16 +581,14 @@
     padding: 6px 10px;
     border: 1px solid var(--amber-dim);
     text-align: right;
+    animation: amberFlicker 16s steps(1) infinite;
   }
 
   .scan-readout .label { color: var(--phosphor-faint); }
 
-  /* Bottom telemetry strip */
   .telemetry {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
+    bottom: 12px; left: 12px; right: 12px;
     z-index: 5;
     display: flex;
     justify-content: space-between;
@@ -663,21 +606,16 @@
 
   .telemetry .green { color: var(--green); }
   .telemetry .amber { color: var(--amber); }
-  .telemetry .warn { color: var(--warning); }
+  .telemetry .warn { color: var(--warning); animation: amberFlicker 12s steps(1) infinite; }
 
-  /* Drifting particles */
   .particles {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 3;
+    position: absolute; inset: 0;
+    overflow: hidden; pointer-events: none; z-index: 3;
   }
 
   .particle {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    width: 1px; height: 1px;
     background: var(--phosphor);
     opacity: 0;
     animation: drift 18s linear infinite;
@@ -690,28 +628,22 @@
     100% { opacity: 0; transform: translate(35px, -55px); }
   }
 
-  /* Calibration marks - subtle crosshairs */
   .calibration {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 4;
+    position: absolute; inset: 0;
+    pointer-events: none; z-index: 4;
   }
 
   .calibration .mark {
     position: absolute;
     color: var(--phosphor-faint);
     font-size: 11px;
-    font-family: 'Share Tech Mono', monospace;
     opacity: 0.5;
   }
 
-  /* ASCII mountain */
   .landscape-art {
-    font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+    font-family: 'Share Tech Mono', monospace;
     font-size: 6.5px;
     line-height: 6.5px;
-    letter-spacing: 0;
     color: var(--phosphor);
     white-space: pre;
     user-select: none;
@@ -722,28 +654,22 @@
     opacity: 0.85;
   }
 
-  /* Phosphor bloom on horizon */
   .landscape::before {
     content: '';
     position: absolute;
     left: 0; right: 0;
-    bottom: 20%;
-    height: 80px;
+    bottom: 20%; height: 80px;
     background: radial-gradient(ellipse at center bottom, rgba(90,138,146,0.15) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 1;
+    pointer-events: none; z-index: 1;
   }
 
-  /* Top haze */
   .landscape::after {
     content: '';
     position: absolute;
-    left: 0; right: 0;
-    top: 0;
+    left: 0; right: 0; top: 0;
     height: 35%;
     background: radial-gradient(ellipse at 70% 30%, rgba(184,148,31,0.06) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 1;
+    pointer-events: none; z-index: 1;
   }
 
   /* ━━━━━━━━ DEDICATION ━━━━━━━━ */
@@ -763,11 +689,10 @@
   }
 
   .dedication.on { opacity: 1; }
-
   .dedication .amber { color: var(--amber); }
   .dedication .sep { color: var(--phosphor-faint); margin: 0 12px; }
 
-  /* ━━━━━━━━ BOTTOM TELEMETRY BAR ━━━━━━━━ */
+  /* ━━━━━━━━ BOTTOM BAR ━━━━━━━━ */
   .bottom-bar {
     display: flex;
     justify-content: space-between;
@@ -785,7 +710,7 @@
   .bottom-bar .label { color: var(--phosphor-faint); }
   .bottom-bar .green { color: var(--green); }
   .bottom-bar .amber { color: var(--amber); }
-  .bottom-bar .red { color: var(--red); }
+  .bottom-bar .red { color: var(--red); animation: elemFlicker 13s steps(1) infinite; }
   .bottom-bar .sep { color: var(--phosphor-faint); }
 
   /* ━━━━━━━━ BOOT OVERLAY ━━━━━━━━ */
@@ -800,6 +725,18 @@
     color: var(--phosphor);
     transition: opacity 1s ease-out;
     overflow: hidden;
+    animation: bootFlicker 3s steps(1) infinite;
+  }
+
+  /* Boot screen has its own flicker pattern - more aggressive during startup */
+  @keyframes bootFlicker {
+    0%, 100% { opacity: 1; }
+    24% { opacity: 1; }
+    24.5% { opacity: 0.4; }
+    25% { opacity: 1; }
+    61% { opacity: 1; }
+    61.4% { opacity: 0.2; }
+    61.7% { opacity: 1; }
   }
 
   .boot-overlay.done {
@@ -821,36 +758,56 @@
 
   .boot-header.on { opacity: 1; }
 
-  .boot-line {
-    opacity: 0;
-    transition: opacity 0.3s;
-    color: var(--phosphor-dim);
-  }
-
+  .boot-line { opacity: 0; transition: opacity 0.3s; color: var(--phosphor-dim); }
   .boot-line.on { opacity: 1; }
-
-  .boot-line .label {
-    color: var(--phosphor-dim);
-    display: inline-block;
-    min-width: 280px;
-  }
-
+  .boot-line .label { color: var(--phosphor-dim); display: inline-block; min-width: 280px; }
   .boot-line .ok { color: var(--green); }
   .boot-line .warn { color: var(--warning); }
   .boot-line .fail { color: var(--red); }
   .boot-line .info { color: var(--cyan); }
   .boot-line .amber { color: var(--amber); }
+  .boot-line .phosphor { color: var(--phosphor); }
 
-  /* Hover decay on logo */
-  .logo:hover {
-    animation: logoDecay 0.5s steps(3) 1, flickerSlow 5s steps(1) infinite;
+  /* Welcome dedication block inside boot */
+  .boot-welcome {
+    margin-top: 28px;
+    padding: 16px 20px;
+    border: 1px solid var(--amber-dim);
+    background: rgba(184,148,31,0.04);
+    opacity: 0;
+    transition: opacity 0.8s ease-out;
   }
 
-  @keyframes logoDecay {
-    0% { letter-spacing: 0.08em; }
-    33% { letter-spacing: 0.12em; opacity: 0.6; transform: translateX(-1px); }
-    66% { letter-spacing: 0.06em; opacity: 0.9; transform: translateX(1px); }
-    100% { letter-spacing: 0.08em; opacity: 1; transform: translateX(0); }
+  .boot-welcome.on { opacity: 1; }
+
+  .boot-welcome .label {
+    font-size: 9px;
+    color: var(--amber);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .boot-welcome .msg {
+    font-size: 13px;
+    color: var(--phosphor);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  .boot-welcome .msg .amber { color: var(--amber); }
+  .boot-welcome .msg .names {
+    color: var(--phosphor);
+    letter-spacing: 0.3em;
+  }
+
+  .boot-welcome .sub {
+    margin-top: 10px;
+    font-size: 9px;
+    color: var(--phosphor-faint);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
   }
 
   /* Responsive */
@@ -884,14 +841,21 @@
   <div class="boot-line"><span class="label">&gt; LAST OPERATOR CONTACT:</span> <span class="warn">UNKNOWN</span></div>
   <div class="boot-line"><span class="label">&gt; PRIMARY NETWORK:</span> <span class="fail">OFFLINE</span></div>
   <div class="boot-line"><span class="label">&gt; FUSION BACKUP:</span> <span class="ok">ACTIVE</span></div>
+  <div class="boot-line"><span class="label">&gt; NODE:</span> <span class="phosphor">DS-9</span> <span class="label">// BUILD:</span> <span class="phosphor">0.8.7A</span></div>
   <div class="boot-line"><span class="label">&gt; MEMORY DECAY:</span> <span class="warn">DETECTED [SECTORS 0x2A4F-0x3B12]</span></div>
-  <div class="boot-line"><span class="label">&gt; PERCEPTUAL OFFSET CALIBRATION:</span> <span class="ok">NOMINAL</span></div>
-  <div class="boot-line"><span class="label">&gt; ANOMALY REGISTRY:</span> <span class="ok">INTACT</span></div>
   <div class="boot-line"><span class="label">&gt; FABRICATION SYSTEMS:</span> <span class="ok">STABLE</span></div>
   <div class="boot-line"><span class="label">&gt; AUTONOMOUS OPERATION:</span> <span class="info">UNATTENDED // CYCLE 0x7F4A</span></div>
   <div class="boot-line"><span class="label">&gt; RECOVERY TERMINAL:</span> <span class="ok">ONLINE</span></div>
-  <div class="boot-line">&nbsp;</div>
-  <div class="boot-line"><span class="info">&gt; observer detected. routing through degraded relay...</span></div>
+
+  <div class="boot-welcome" id="bootWelcome">
+    <div class="label">▶ ARCHIVE GREETING // OPERATOR LEGACY</div>
+    <div class="msg">
+      <span class="amber">WELCOME, USER.</span><br>
+      THIS ARCHIVE WAS COMMISSIONED FOR<br>
+      <span class="names">ASIYA &nbsp;::&nbsp; ALI &nbsp;::&nbsp; AHMED</span>
+    </div>
+    <div class="sub">▶ legacy directive recovered // signal stable</div>
+  </div>
 </div>
 
 <!-- ━━━━━━━━ TOP STATUS BAR ━━━━━━━━ -->
@@ -900,9 +864,9 @@
     <span class="amber">▶</span>
     <span>GLITCHLABS.SYSTEMS</span>
     <span class="sep">::</span>
-    <span>RECOVERY TERMINAL</span>
+    <span>RECOVERY NODE</span>
     <span class="sep">::</span>
-    <span class="warn">ARCHIVE AGE 512Y</span>
+    <span class="amber">ARCHIVE AGE 512Y</span>
   </div>
   <div class="right">
     <span><span class="sep">SYS</span> <span id="systime">00:13:37:42</span></span>
@@ -929,7 +893,6 @@
 <!-- ━━━━━━━━ MAIN GRID ━━━━━━━━ -->
 <div class="main">
 
-  <!-- LEFT: TERMINAL -->
   <div class="terminal">
     <div class="panel-tag">▣ TERMINAL // 01</div>
     <div class="archive-stamp">RECOVERED ARTIFACT</div>
@@ -938,8 +901,8 @@
       <div class="logo" id="logo">GLITCHLABS.SYSTEMS</div>
       <div class="logo-meta" id="logoMeta">
         <span class="amber">▶</span> AUTONOMOUS FABRICATION ARCHIVE
-        <span class="sep">::</span> NODE DS-9-17
-        <span class="sep">::</span> v1.2.7
+        <span class="sep">::</span> NODE DS-9
+        <span class="sep">::</span> BUILD 0.8.7A
       </div>
     </div>
 
@@ -948,7 +911,6 @@
       FOR PUBLIC RELEASE.
     </div>
 
-    <!-- ━━━━━━━━ FUSION STATUS PANEL ━━━━━━━━ -->
     <div class="fusion-panel" data-delay="1000">
       <div class="header">FUSION SUBSYSTEM // LIVE TELEMETRY <span class="pulse"></span></div>
       <div class="row"><span class="label">Core Output</span><span class="val green">94.2% NOMINAL</span></div>
@@ -961,7 +923,6 @@
 
     <div class="divider" data-delay="1300">▶ ARCHIVE DIRECTORY</div>
 
-    <!-- ━━━━━━━━ ABOUT ━━━━━━━━ -->
     <div class="data-block" data-delay="1400">
       <div class="header">▣ FILE :: ABOUT.TXT</div>
       <div class="body">
@@ -972,7 +933,6 @@
       </div>
     </div>
 
-    <!-- ━━━━━━━━ PRODUCT DOSSIER ━━━━━━━━ -->
     <div class="data-block" data-delay="1700">
       <div class="header">▣ DOSSIER :: DONUT.EXE</div>
       <div class="body">
@@ -980,15 +940,13 @@
         <div class="row"><span class="key">TYPE</span><span class="val">reactive visual toy platform</span></div>
         <div class="row"><span class="key">SERIES</span><span class="val">GLITCH OBJECTS</span></div>
         <div class="row"><span class="key">STATUS</span><span class="val warn">prototype validation</span></div>
-        <div class="row"><span class="key">FUNCTION</span><span class="val">layered substrate produces controlled visual desynchronization under applied compression</span></div>
         <div class="row"><span class="key">FORM FACTOR</span><span class="val">toroidal // elastomeric shell // multi-layer optical stack</span></div>
+        <div class="row"><span class="key">CORE FEATURES</span><span class="val">RGB layer desync // CRT distortion // reversible collapse // modular shell // configurable patterns</span></div>
         <div class="row"><span class="key">PATENT STATUS</span><span class="val green">FILED // PROVISIONAL 2026</span></div>
         <div class="row"><span class="key">DISTRIBUTION</span><span class="val cyan">closed alpha</span></div>
-        <div class="row"><span class="key">ADVISORY</span><span class="val">repeat exposure recommended.</span></div>
       </div>
     </div>
 
-    <!-- ━━━━━━━━ ROADMAP ━━━━━━━━ -->
     <div class="data-block" data-delay="2000">
       <div class="header">▣ MANIFEST :: RELEASE SEQUENCE</div>
       <div class="body">
@@ -996,11 +954,10 @@
         <div class="row"><span class="key">Q3 2026</span><span class="val amber">▶ closed alpha // dossier 001</span></div>
         <div class="row"><span class="key">Q4 2026</span><span class="val">▶ limited drop // glaze series</span></div>
         <div class="row"><span class="key">2027</span><span class="val cyan">▶ public release // distribution active</span></div>
-        <div class="row"><span class="key">∞</span><span class="val" style="opacity:0.5">▶ <span class="corrupt">[SECTOR UNREADABLE]</span></span></div>
+        <div class="row"><span class="key">∞</span><span class="val" style="opacity:0.5">▶ <span class="corrupt">▒▒▒▒▒ [SECTOR UNREADABLE] ▒▒▒▒▒</span></span></div>
       </div>
     </div>
 
-    <!-- ━━━━━━━━ MISSION ━━━━━━━━ -->
     <div class="data-block" data-delay="2300">
       <div class="header">▣ FILE :: DIRECTIVE.TXT</div>
       <div class="body">
@@ -1009,7 +966,6 @@
       </div>
     </div>
 
-    <!-- ━━━━━━━━ ACCESS / WAITLIST ━━━━━━━━ -->
     <div class="access" data-delay="2600" id="accessBlock">
       <div class="access-header">
         <div class="title">▶ ACCESS PROTOCOL // ALPHA</div>
@@ -1032,12 +988,9 @@
     <div class="term-prompt" data-delay="2900">
       <span class="user">observer@glitchlabs</span>:<span class="path">~/archive</span>$ <span class="cursor"></span>
     </div>
-
   </div>
 
-  <!-- RIGHT: OBSERVATORY VIEW -->
   <div class="landscape" id="landscape">
-
     <div class="coords">
       <div><span class="label">LAT</span> <span class="val">09°33'42"N</span></div>
       <div><span class="label">LON</span> <span class="val">44°03'27"E</span></div>
@@ -1117,29 +1070,22 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
       <span><span class="warn">TONER DEGRADED</span></span>
       <span>FRAME RETENTION 86%</span>
     </div>
-
   </div>
 
 </div>
 
-<!-- ━━━━━━━━ DEDICATION ━━━━━━━━ -->
 <div class="dedication" id="dedication">
-  <span class="amber">▶</span> ARCHIVE DEDICATION
-  <span class="sep">::</span>
-  ASIYA, ALI &amp; AHMED
-  <span class="sep">::</span>
-  <span class="amber">▶</span>
+  <span class="amber">▶</span> ARCHIVE LEGACY <span class="sep">::</span> ASIYA <span class="sep">::</span> ALI <span class="sep">::</span> AHMED <span class="sep">::</span> <span class="amber">▶</span>
 </div>
 
-<!-- ━━━━━━━━ BOTTOM TELEMETRY ━━━━━━━━ -->
 <div class="bottom-bar">
   <span><span class="label">obs::</span> <span class="amber">unauthenticated</span></span>
   <span class="sep">//</span>
-  <span><span class="label">node::</span> ds-9-17</span>
+  <span><span class="label">node::</span> ds-9</span>
+  <span class="sep">//</span>
+  <span><span class="label">build::</span> 0.8.7a</span>
   <span class="sep">//</span>
   <span><span class="label">uptime::</span> <span id="uptime">512y::047d::21h</span></span>
-  <span class="sep">//</span>
-  <span><span class="label">protocol::</span> nt6-442a</span>
   <span class="sep">//</span>
   <span><span class="label">decay::</span> <span class="red">14%</span></span>
   <span class="sep">//</span>
@@ -1147,7 +1093,6 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
 </div>
 
 <script>
-  // Drifting particles
   const particlesContainer = document.getElementById('particles');
   for (let i = 0; i < 30; i++) {
     const p = document.createElement('div');
@@ -1159,7 +1104,6 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
     particlesContainer.appendChild(p);
   }
 
-  // Live SYS TIME counter
   let baseSec = Math.floor(Math.random() * 1000) + 800;
   function updateTime() {
     baseSec++;
@@ -1167,18 +1111,16 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
     const hrs = Math.floor((baseSec % 86400) / 3600);
     const min = Math.floor((baseSec % 3600) / 60);
     const sec = baseSec % 60;
-    const timeStr =
+    document.getElementById('systime').textContent =
       String(days).padStart(2,'0') + ':' +
       String(hrs).padStart(2,'0') + ':' +
       String(min).padStart(2,'0') + ':' +
       String(sec).padStart(2,'0');
-    document.getElementById('systime').textContent = timeStr;
     document.getElementById('uptime').textContent = '512y::' +
       String(days).padStart(3,'0') + 'd::' + String(hrs).padStart(2,'0') + 'h';
   }
   setInterval(updateTime, 1000);
 
-  // Boot sequence
   setTimeout(() => {
     document.querySelector('.boot-header').classList.add('on');
   }, 100);
@@ -1188,7 +1130,14 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
     setTimeout(() => line.classList.add('on'), 500 + i * 280);
   });
 
-  const totalBootTime = 500 + bootLines.length * 280 + 1000;
+  // Show welcome dedication during boot (before transitioning out)
+  const welcomeShowTime = 500 + bootLines.length * 280 + 400;
+  setTimeout(() => {
+    document.getElementById('bootWelcome').classList.add('on');
+  }, welcomeShowTime);
+
+  // Hold the welcome on screen for a moment before fading
+  const totalBootTime = welcomeShowTime + 2200;
 
   setTimeout(() => {
     document.getElementById('boot').classList.add('done');
@@ -1235,7 +1184,6 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
 
   }, totalBootTime);
 
-  // Access form handler
   function submitAccess(e) {
     e.preventDefault();
     const email = document.getElementById('accessEmail').value;
