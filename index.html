@@ -7,7 +7,7 @@
 <meta name="description" content="Autonomous fabrication archive. Recovered after 512 years of unattended operation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #050507;
@@ -49,7 +49,6 @@
       var(--bg-deep);
   }
 
-  /* CRT scanlines */
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -70,53 +69,164 @@
     pointer-events: none; z-index: 9998;
   }
 
-  /* ━━━━━━━━ POWER FLICKER ━━━━━━━━ */
-    8% { opacity: 1; }
-    8.5% { opacity: 0.4; }
-    9% { opacity: 1; }
-    14% { opacity: 1; }
-    14.3% { opacity: 0.7; }
-    14.6% { opacity: 1; }
-    34% { opacity: 1; }
-    34.3% { opacity: 0.2; }
-    34.5% { opacity: 0.9; }
-    34.8% { opacity: 1; }
-    62% { opacity: 1; }
-    62.4% { opacity: 0.5; }
-    62.6% { opacity: 1; }
-    87% { opacity: 1; }
-    87.3% { opacity: 0.3; }
-    87.6% { opacity: 0.85; }
-    87.9% { opacity: 1; }
+  /* Console-wide flicker - activates 5s after load */
+  @keyframes consoleFlicker {
+    0%, 100% { opacity: 1; filter: brightness(1); }
+    1.2% { opacity: 0.25; filter: brightness(0.3); }
+    1.8% { opacity: 0.85; filter: brightness(0.7); }
+    2.4% { opacity: 1; filter: brightness(1); }
   }
 
-    23% { filter: brightness(1); }
-    23.2% { filter: brightness(0.15); }
-    23.4% { filter: brightness(1); }
-    71% { filter: brightness(1); }
-    71.3% { filter: brightness(0.3); }
-    71.5% { filter: brightness(1); }
+  body.console-active {
+    animation: consoleFlicker 17s steps(1) infinite;
   }
 
-    19% { opacity: 1; }
-    19.2% { opacity: 0.3; }
-    19.4% { opacity: 1; }
-    44% { opacity: 1; }
-    44.2% { opacity: 0.55; }
-    44.5% { opacity: 1; }
-    78% { opacity: 1; }
-    78.3% { opacity: 0.25; }
-    78.6% { opacity: 1; }
+  /* ━━━━━━━━ BOOT OVERLAY ━━━━━━━━ */
+  .boot-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-deep);
+    z-index: 5000;
+    padding: 40px 48px;
+    font-size: 12px;
+    line-height: 1.95;
+    color: var(--phosphor);
+    transition: opacity 1s ease-out;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
-    11% { opacity: 1; }
-    11.2% { opacity: 0.4; text-shadow: none; }
-    11.4% { opacity: 1; text-shadow: 0 0 4px var(--amber-glow); }
-    56% { opacity: 1; }
-    56.3% { opacity: 0.6; }
-    56.6% { opacity: 1; }
+  .boot-overlay.done {
+    opacity: 0;
+    pointer-events: none;
   }
 
+  .boot-header {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--amber);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rune);
+    padding-bottom: 10px;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .boot-header.on { opacity: 1; }
+
+  .boot-section { flex: 0 0 auto; }
+
+  .boot-line {
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: var(--phosphor-dim);
+  }
+  .boot-line.on { opacity: 1; }
+  .boot-line .label { color: var(--phosphor-dim); display: inline-block; min-width: 280px; }
+  .boot-line .ok { color: var(--green); }
+  .boot-line .warn { color: var(--warning); }
+  .boot-line .fail { color: var(--red); }
+  .boot-line .info { color: var(--cyan); }
+  .boot-line .amber { color: var(--amber); }
+  .boot-line .phosphor { color: var(--phosphor); }
+
+  /* ━━━━━━━━ AUTHENTICATION SEQUENCE ━━━━━━━━ */
+  .auth-stage {
+    margin-top: 32px;
+    padding: 24px 0;
+    border-top: 1px solid var(--rune);
+    border-bottom: 1px solid var(--rune);
+    display: none;
+  }
+
+  .auth-stage.active { display: block; }
+
+  .auth-label {
+    font-size: 10px;
+    color: var(--phosphor-dim);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .auth-label.on { opacity: 1; }
+  .auth-label .amber { color: var(--amber); }
+  .auth-label .cyan { color: var(--cyan); }
+
+  .auth-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(48px, 9vw, 110px);
+    line-height: 1;
+    letter-spacing: 0.15em;
+    color: var(--phosphor);
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(200,196,184,0.5), 0 0 24px rgba(200,196,184,0.2);
+    margin: 8px 0 14px 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .auth-name.on { opacity: 1; }
+
+  /* Name scan effect - bright sweep */
+  @keyframes nameAppear {
+    0% { opacity: 0; filter: brightness(2); letter-spacing: 0.4em; }
+    20% { opacity: 1; filter: brightness(2); }
+    60% { opacity: 1; filter: brightness(1.4); letter-spacing: 0.18em; }
+    100% { opacity: 1; filter: brightness(1); letter-spacing: 0.15em; }
+  }
+
+  .auth-name.scanning {
+    animation: nameAppear 0.8s ease-out forwards;
+  }
+
+  /* Single flicker on grant */
+  @keyframes grantFlicker {
+    0%, 100% { opacity: 1; }
+    20% { opacity: 0.2; }
+    25% { opacity: 1; }
+    35% { opacity: 0.4; }
+    40% { opacity: 1; }
+  }
+
+  .auth-name.granted {
+    color: var(--phosphor);
+    animation: grantFlicker 0.5s steps(1) 1;
+  }
+
+  .auth-status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .auth-status.on { opacity: 1; }
+
+  .auth-status .label { color: var(--phosphor-dim); }
+  .auth-status .granted { color: var(--green); }
+  .auth-status .arrow { color: var(--amber); }
+
+  .auth-meta {
+    margin-top: 8px;
+    font-size: 9px;
+    color: var(--phosphor-faint);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    line-height: 1.7;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .auth-meta.on { opacity: 1; }
 
   /* ━━━━━━━━ TOP STATUS BAR ━━━━━━━━ */
   .top-bar {
@@ -224,25 +334,9 @@
     text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2);
     opacity: 0;
     transition: opacity 1s ease-out;
-    position: relative;
   }
 
-  .logo.on {
-    opacity: 1;
-  }
-
-    13% { opacity: 1; }
-    13.3% { opacity: 0.2; text-shadow: none; }
-    13.6% { opacity: 0.7; }
-    13.9% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
-    47% { opacity: 1; }
-    47.4% { opacity: 0.4; }
-    47.7% { opacity: 1; }
-    82% { opacity: 1; }
-    82.3% { opacity: 0.15; text-shadow: none; }
-    82.5% { opacity: 0.6; text-shadow: 0 0 2px rgba(200,196,184,0.3); }
-    82.8% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
-  }
+  .logo.on { opacity: 1; }
 
   .logo-meta {
     margin-top: 10px;
@@ -258,7 +352,6 @@
   .logo-meta .amber { color: var(--amber); }
   .logo-meta .sep { color: var(--phosphor-faint); margin: 0 6px; }
 
-  /* ━━━━━━━━ SLOGAN ━━━━━━━━ */
   .slogan {
     margin-top: 18px;
     font-size: 11px;
@@ -275,7 +368,6 @@
   .slogan.on { opacity: 1; }
   .slogan .phosphor { color: var(--phosphor); }
 
-  /* ━━━━━━━━ DIVIDERS ━━━━━━━━ */
   .divider {
     display: flex;
     align-items: center;
@@ -289,18 +381,9 @@
   }
 
   .divider.on { opacity: 1; }
+  .divider::before { content: ''; flex: 0 0 16px; height: 1px; background: var(--rune); margin-right: 12px; }
+  .divider::after { content: ''; flex: 1; height: 1px; background: var(--rune); margin-left: 12px; }
 
-  .divider::before {
-    content: ''; flex: 0 0 16px; height: 1px;
-    background: var(--rune); margin-right: 12px;
-  }
-
-  .divider::after {
-    content: ''; flex: 1; height: 1px;
-    background: var(--rune); margin-left: 12px;
-  }
-
-  /* ━━━━━━━━ DATA BLOCKS ━━━━━━━━ */
   .data-block {
     margin-bottom: 16px;
     font-size: 12px;
@@ -337,12 +420,8 @@
   .data-block .val.cyan { color: var(--cyan); }
   .data-block .val.red { color: var(--red); }
 
-  .corrupt {
-    color: var(--phosphor-faint);
-    letter-spacing: 0.05em;
-  }
+  .corrupt { color: var(--phosphor-faint); letter-spacing: 0.05em; }
 
-  /* ━━━━━━━━ FUSION STATUS PANEL ━━━━━━━━ */
   .fusion-panel {
     margin: 14px 0;
     padding: 12px 14px;
@@ -398,7 +477,6 @@
   .fusion-panel .row .val.warn { color: var(--warning); }
   .fusion-panel .row .val.red { color: var(--red); }
 
-  /* ━━━━━━━━ ACCESS FORM ━━━━━━━━ */
   .access {
     margin-top: 20px;
     padding: 16px;
@@ -483,7 +561,6 @@
 
   .access-confirm.show { display: block; }
 
-  /* ━━━━━━━━ TERMINAL PROMPT ━━━━━━━━ */
   .term-prompt {
     margin-top: 18px;
     font-size: 11px;
@@ -532,8 +609,8 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     line-height: 1.7;
-    z-index: 5;
-    background: rgba(0,0,0,0.65);
+    z-index: 6;
+    background: rgba(0,0,0,0.7);
     padding: 6px 10px;
     border: 1px solid var(--rune);
   }
@@ -549,8 +626,8 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     line-height: 1.7;
-    z-index: 5;
-    background: rgba(0,0,0,0.65);
+    z-index: 6;
+    background: rgba(0,0,0,0.7);
     padding: 6px 10px;
     border: 1px solid var(--amber-dim);
     text-align: right;
@@ -561,7 +638,7 @@
   .telemetry {
     position: absolute;
     bottom: 12px; left: 12px; right: 12px;
-    z-index: 5;
+    z-index: 6;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -569,7 +646,7 @@
     color: var(--phosphor-dim);
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.75);
     padding: 6px 10px;
     border: 1px solid var(--rune);
     flex-wrap: wrap;
@@ -579,6 +656,187 @@
   .telemetry .green { color: var(--green); }
   .telemetry .amber { color: var(--amber); }
   .telemetry .warn { color: var(--warning); }
+
+  /* ━━━━━━━━ TARGET RETICLES ━━━━━━━━ */
+  .targets {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .target {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    transform: translate(-50%, -50%);
+  }
+
+  .target-small { width: 48px; height: 48px; }
+  .target-large { width: 96px; height: 96px; }
+
+  /* Target reticle - corner brackets */
+  .target::before,
+  .target::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--amber);
+    box-shadow: 0 0 4px var(--amber-glow);
+  }
+
+  .target::before {
+    top: 0; left: 0;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .target::after {
+    bottom: 0; right: 0;
+    border-left: none;
+    border-top: none;
+  }
+
+  .target .br-tr,
+  .target .br-bl {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--amber);
+    box-shadow: 0 0 4px var(--amber-glow);
+  }
+
+  .target .br-tr {
+    top: 0; right: 0;
+    border-left: none;
+    border-bottom: none;
+  }
+
+  .target .br-bl {
+    bottom: 0; left: 0;
+    border-right: none;
+    border-top: none;
+  }
+
+  /* Central crosshair */
+  .target .cross-h,
+  .target .cross-v {
+    position: absolute;
+    background: var(--amber);
+    box-shadow: 0 0 4px var(--amber-glow);
+  }
+
+  .target .cross-h {
+    top: 50%; left: 50%;
+    width: 14px; height: 1px;
+    transform: translate(-50%, -50%);
+  }
+
+  .target .cross-v {
+    top: 50%; left: 50%;
+    width: 1px; height: 14px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Target label */
+  .target .label {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: var(--amber);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow: 0 0 4px var(--amber-glow);
+  }
+
+  /* Cyan variant - inactive/secondary targets */
+  .target.cyan::before,
+  .target.cyan::after,
+  .target.cyan .br-tr,
+  .target.cyan .br-bl {
+    border-color: var(--cyan);
+    box-shadow: 0 0 4px var(--cyan-glow);
+  }
+
+  .target.cyan .cross-h,
+  .target.cyan .cross-v {
+    background: var(--cyan);
+    box-shadow: 0 0 4px var(--cyan-glow);
+  }
+
+  .target.cyan .label {
+    color: var(--cyan);
+    text-shadow: 0 0 4px var(--cyan-glow);
+  }
+
+  /* Red variant - flagged/priority targets */
+  .target.red::before,
+  .target.red::after,
+  .target.red .br-tr,
+  .target.red .br-bl {
+    border-color: var(--red);
+    box-shadow: 0 0 4px rgba(138,58,42,0.4);
+  }
+
+  .target.red .cross-h,
+  .target.red .cross-v {
+    background: var(--red);
+  }
+
+  .target.red .label {
+    color: var(--red);
+  }
+
+  /* Pulsing animation for active targets */
+  @keyframes targetPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .target.active { animation: targetPulse 2.5s ease-in-out infinite; }
+  .target.active-fast { animation: targetPulse 1.2s ease-in-out infinite; }
+
+  /* Rotating outer ring on hover or active focus */
+  .target .ring {
+    position: absolute;
+    inset: -6px;
+    border: 1px dashed var(--amber);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: ringRotate 8s linear infinite;
+  }
+
+  .target.cyan .ring { border-color: var(--cyan); }
+  .target.red .ring { border-color: var(--red); }
+
+  @keyframes ringRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Scanning sweep line - horizontal line that moves down */
+  .scan-sweep {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    box-shadow: 0 0 8px var(--cyan-glow), 0 0 16px var(--cyan-glow);
+    z-index: 4;
+    opacity: 0.6;
+    animation: sweepDown 6s linear infinite;
+  }
+
+  @keyframes sweepDown {
+    0% { top: -2%; opacity: 0; }
+    5% { opacity: 0.7; }
+    95% { opacity: 0.7; }
+    100% { top: 102%; opacity: 0; }
+  }
 
   .particles {
     position: absolute; inset: 0;
@@ -600,18 +858,6 @@
     100% { opacity: 0; transform: translate(35px, -55px); }
   }
 
-  .calibration {
-    position: absolute; inset: 0;
-    pointer-events: none; z-index: 4;
-  }
-
-  .calibration .mark {
-    position: absolute;
-    color: var(--phosphor-faint);
-    font-size: 11px;
-    opacity: 0.5;
-  }
-
   .landscape-art {
     font-family: 'Share Tech Mono', monospace;
     font-size: 6.5px;
@@ -623,7 +869,7 @@
     text-shadow: 0 0 1px rgba(200,196,184,0.5);
     position: relative;
     z-index: 2;
-    opacity: 0.85;
+    opacity: 0.7;
   }
 
   .landscape::before {
@@ -644,7 +890,19 @@
     pointer-events: none; z-index: 1;
   }
 
-  /* ━━━━━━━━ DEDICATION ━━━━━━━━ */
+  /* Grid overlay on landscape */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(184,148,31,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,148,31,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0.5;
+  }
+
   .dedication {
     text-align: center;
     padding: 16px 24px;
@@ -664,7 +922,6 @@
   .dedication .amber { color: var(--amber); }
   .dedication .sep { color: var(--phosphor-faint); margin: 0 12px; }
 
-  /* ━━━━━━━━ BOTTOM BAR ━━━━━━━━ */
   .bottom-bar {
     display: flex;
     justify-content: space-between;
@@ -685,107 +942,16 @@
   .bottom-bar .red { color: var(--red); }
   .bottom-bar .sep { color: var(--phosphor-faint); }
 
-  /* ━━━━━━━━ BOOT OVERLAY ━━━━━━━━ */
-  .boot-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-deep);
-    z-index: 5000;
-    padding: 40px 48px;
-    font-size: 12px;
-    line-height: 1.95;
-    color: var(--phosphor);
-    transition: opacity 1s ease-out;
-    overflow: hidden;
-  }
-
-    24% { opacity: 1; }
-    24.5% { opacity: 0.4; }
-    25% { opacity: 1; }
-    61% { opacity: 1; }
-    61.4% { opacity: 0.2; }
-    61.7% { opacity: 1; }
-  }
-
-  .boot-overlay.done {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .boot-header {
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    color: var(--amber);
-    margin-bottom: 24px;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--rune);
-    padding-bottom: 10px;
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-
-  .boot-header.on { opacity: 1; }
-
-  .boot-line { opacity: 0; transition: opacity 0.3s; color: var(--phosphor-dim); }
-  .boot-line.on { opacity: 1; }
-  .boot-line .label { color: var(--phosphor-dim); display: inline-block; min-width: 280px; }
-  .boot-line .ok { color: var(--green); }
-  .boot-line .warn { color: var(--warning); }
-  .boot-line .fail { color: var(--red); }
-  .boot-line .info { color: var(--cyan); }
-  .boot-line .amber { color: var(--amber); }
-  .boot-line .phosphor { color: var(--phosphor); }
-
-  /* Welcome dedication block inside boot */
-  .boot-welcome {
-    margin-top: 28px;
-    padding: 16px 20px;
-    border: 1px solid var(--amber-dim);
-    background: rgba(184,148,31,0.04);
-    opacity: 0;
-    transition: opacity 0.8s ease-out;
-  }
-
-  .boot-welcome.on { opacity: 1; }
-
-  .boot-welcome .label {
-    font-size: 9px;
-    color: var(--amber);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  .boot-welcome .msg {
-    font-size: 13px;
-    color: var(--phosphor);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    line-height: 1.8;
-  }
-
-  .boot-welcome .msg .amber { color: var(--amber); }
-  .boot-welcome .msg .names {
-    color: var(--phosphor);
-    letter-spacing: 0.3em;
-  }
-
-  .boot-welcome .sub {
-    margin-top: 10px;
-    font-size: 9px;
-    color: var(--phosphor-faint);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-  }
-
-  /* Responsive */
   @media (max-width: 900px) {
     .main { grid-template-columns: 1fr; padding: 0 16px; }
     .terminal { border-right: 1px solid var(--rune); }
-    .landscape { border-top: none; min-height: 320px; }
+    .landscape { border-top: none; min-height: 380px; }
     .landscape-art { font-size: 4.5px; line-height: 4.5px; }
     .data-block .key { min-width: 110px; font-size: 10px; }
     .recovery-header .label { min-width: 180px; }
+    .target { width: 50px; height: 50px; }
+    .target-small { width: 36px; height: 36px; }
+    .target-large { width: 70px; height: 70px; }
   }
 
   @media (max-width: 600px) {
@@ -797,45 +963,43 @@
     .access-form button { width: 100%; }
     .recovery-header .label { min-width: 140px; }
     body { font-size: 12px; }
+    .auth-name { font-size: clamp(40px, 14vw, 80px); }
   }
-
-  /* Console-wide power flicker - applied after full load by JS */
-  @keyframes consoleFlicker {
-    0%, 100% { opacity: 1; filter: brightness(1); }
-    1.2% { opacity: 0.25; filter: brightness(0.3); }
-    1.8% { opacity: 0.85; filter: brightness(0.7); }
-    2.4% { opacity: 1; filter: brightness(1); }
-  }
-
-  body.console-active {
-    animation: consoleFlicker 17s steps(1) infinite;
-  }
-
 </style>
 </head>
 <body>
 
 <!-- ━━━━━━━━ BOOT OVERLAY ━━━━━━━━ -->
 <div class="boot-overlay" id="boot">
-  <div class="boot-header">▶ GLITCHLABS.SYSTEMS // RECOVERY NODE</div>
-  <div class="boot-line"><span class="label">&gt; ARCHIVE AGE:</span> <span class="amber">512 YEARS</span></div>
-  <div class="boot-line"><span class="label">&gt; LAST OPERATOR CONTACT:</span> <span class="warn">UNKNOWN</span></div>
-  <div class="boot-line"><span class="label">&gt; PRIMARY NETWORK:</span> <span class="fail">OFFLINE</span></div>
-  <div class="boot-line"><span class="label">&gt; FUSION BACKUP:</span> <span class="ok">ACTIVE</span></div>
-  <div class="boot-line"><span class="label">&gt; NODE:</span> <span class="phosphor">DS-9</span> <span class="label">// BUILD:</span> <span class="phosphor">0.8.7A</span></div>
-  <div class="boot-line"><span class="label">&gt; MEMORY DECAY:</span> <span class="warn">DETECTED [SECTORS 0x2A4F-0x3B12]</span></div>
-  <div class="boot-line"><span class="label">&gt; FABRICATION SYSTEMS:</span> <span class="ok">STABLE</span></div>
-  <div class="boot-line"><span class="label">&gt; AUTONOMOUS OPERATION:</span> <span class="info">UNATTENDED // CYCLE 0x7F4A</span></div>
-  <div class="boot-line"><span class="label">&gt; RECOVERY TERMINAL:</span> <span class="ok">ONLINE</span></div>
+  <div class="boot-section">
+    <div class="boot-header">▶ GLITCHLABS.SYSTEMS // RECOVERY NODE</div>
+    <div class="boot-line"><span class="label">&gt; ARCHIVE AGE:</span> <span class="amber">512 YEARS</span></div>
+    <div class="boot-line"><span class="label">&gt; PRIMARY NETWORK:</span> <span class="fail">OFFLINE</span></div>
+    <div class="boot-line"><span class="label">&gt; FUSION BACKUP:</span> <span class="ok">ACTIVE</span></div>
+    <div class="boot-line"><span class="label">&gt; NODE:</span> <span class="phosphor">DS-9</span> <span class="label">// BUILD:</span> <span class="phosphor">0.8.7A</span></div>
+    <div class="boot-line"><span class="label">&gt; MEMORY DECAY:</span> <span class="warn">DETECTED</span></div>
+    <div class="boot-line"><span class="label">&gt; FABRICATION SYSTEMS:</span> <span class="ok">STABLE</span></div>
+    <div class="boot-line"><span class="label">&gt; OBSERVER DETECTED:</span> <span class="info">RUNNING AUTHENTICATION...</span></div>
+  </div>
 
-  <div class="boot-welcome" id="bootWelcome">
-    <div class="label">▶ ARCHIVE GREETING // OPERATOR LEGACY</div>
-    <div class="msg">
-      <span class="amber">WELCOME, USER.</span><br>
-      THIS ARCHIVE WAS COMMISSIONED FOR<br>
-      <span class="names">ASIYA &nbsp;::&nbsp; ALI &nbsp;::&nbsp; AHMED</span>
+  <!-- AUTHENTICATION STAGE -->
+  <div class="auth-stage" id="authStage">
+    <div class="auth-label" id="authLabel">
+      <span class="amber">▶</span> OPERATOR IDENTITY <span class="cyan">// MATCH FOUND</span>
     </div>
-    <div class="sub">▶ legacy directive recovered // signal stable</div>
+
+    <div class="auth-name" id="authName">ASIYA</div>
+
+    <div class="auth-status" id="authStatus">
+      <span class="label">▶ STATUS:</span>
+      <span class="granted">ACCESS GRANTED</span>
+      <span class="arrow">→</span>
+      <span class="label">CLEARANCE LEVEL 3</span>
+    </div>
+
+    <div class="auth-meta" id="authMeta">
+      ▶ legacy signature recognized // archive directive intact
+    </div>
   </div>
 </div>
 
@@ -861,13 +1025,13 @@
 <!-- ━━━━━━━━ RECOVERY HEADER ━━━━━━━━ -->
 <div class="recovery-header">
   <div class="line" data-delay="100">
-    <span class="label">▶ OBSERVER DETECTED</span> <span class="status-cold">UNAUTHENTICATED // CLEARANCE PENDING</span>
+    <span class="label">▶ OBSERVERS AUTHENTICATED</span> <span class="status-ok">ASIYA :: ALI :: AHMED</span>
   </div>
   <div class="line" data-delay="300">
     <span class="label">▶ ROUTING THROUGH RELAY 7</span> <span class="status-warn">DEGRADED [PACKET LOSS 14%]</span>
   </div>
   <div class="line" data-delay="500">
-    <span class="label">▶ ARCHIVE INTERFACE</span> <span class="status-ok">OPERATIONAL // READ-ONLY</span>
+    <span class="label">▶ ARCHIVE INTERFACE</span> <span class="status-ok">OPERATIONAL // FULL ACCESS</span>
   </div>
 </div>
 
@@ -987,12 +1151,11 @@
 
     <div class="particles" id="particles"></div>
 
-    <div class="calibration">
-      <div class="mark" style="top: 38%; left: 10%;">+</div>
-      <div class="mark" style="top: 38%; right: 10%;">+</div>
-      <div class="mark" style="bottom: 30%; left: 10%;">+</div>
-      <div class="mark" style="bottom: 30%; right: 10%;">+</div>
-    </div>
+    <!-- Grid overlay -->
+    <div class="grid-overlay"></div>
+
+    <!-- Scanning sweep line -->
+    <div class="scan-sweep"></div>
 
     <pre class="landscape-art">█▓▓█▒▓█▓█▓▒▒▒▒%%▓▓▒▒▒▒#**=▓██████▓██████████████%▒█▓▓▓█▓%#%▓▓▓▓%%▒▓▒▓███████▒######%▒▒▒▒▒██████▓████▒▓▒%▒▓▒▒%*%▒%▓███████████▓▒%###########****#####▒%%%%▒▒%▓██▓▓██▓▓███▓▓▓█▓████%▒%
 █▓▓▒▓▓▓▓▒▓▒▒▒%▒▓▒▒▓▓▓▒▓▓▓▒▓████████▓▓▓▓████▓▓▓▓▓▓█▓▓███▓▒=#▓██▓▒*#▒%▒▒#!+*!!+!i;;;;i;;;;;;;ii;;i!+=,!=!=#%#%#%*##%▓%▓▓▒▓▓██▓███▓%▒##%#▒▒▒▒%#%▒%%*==%▓▒#▓▓▒▒█▓█▓▒▒▓█▒▓▒▒▒▓▓▓▓███████▓
@@ -1045,10 +1208,40 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
 %*+▒==!+=+=; .. !+.::;,++:+i:;i;::!i;i!i::i;!:,',' ';:,,',,'''  . ''.   '#+;;:;,::;;;;;!;;ii;:i::,. ...,'.'.. ,:;;+!;!!i;;;+++!:  . . ..:,.!i .::,;:i!iiiiii;:',,:'''.'.'. ..       
 ;;,;!=++==*+ .. :#,''i;;.',''. . ,.:,,,:i;::;::,::,.   ...'',;  .   ' .';,,!:::i;!,';;:::,,'';,;,!!iii,i;:,'','!:!i*+ii!=!i=*=*!; .. ..'''.   ''.,:ii:,:;:::::::,,.                 </pre>
 
+    <!-- Target reticles -->
+    <div class="targets">
+      <div class="target target-large active" style="top: 32%; left: 48%;">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <div class="cross-h"></div><div class="cross-v"></div>
+        <div class="ring"></div>
+        <div class="label">TGT-001 // PRIMARY</div>
+      </div>
+      <div class="target cyan active-fast" style="top: 58%; left: 26%;">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <div class="cross-h"></div><div class="cross-v"></div>
+        <div class="label">TGT-002</div>
+      </div>
+      <div class="target target-small cyan" style="top: 71%; left: 72%;">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <div class="cross-h"></div><div class="cross-v"></div>
+        <div class="label">TGT-003</div>
+      </div>
+      <div class="target target-small red active-fast" style="top: 44%; left: 78%;">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <div class="cross-h"></div><div class="cross-v"></div>
+        <div class="label">FLAGGED</div>
+      </div>
+      <div class="target target-small cyan" style="top: 82%; left: 45%;">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <div class="cross-h"></div><div class="cross-v"></div>
+        <div class="label">TGT-004</div>
+      </div>
+    </div>
+
     <div class="telemetry">
       <span><span class="amber">▶</span> SCAN ACTIVE</span>
-      <span><span class="green">SIGNAL STABLE</span></span>
-      <span><span class="warn">TONER DEGRADED</span></span>
+      <span><span class="green">5 TARGETS LOCKED</span></span>
+      <span><span class="warn">1 FLAGGED</span></span>
       <span>FRAME RETENTION 86%</span>
     </div>
   </div>
@@ -1060,7 +1253,7 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
 </div>
 
 <div class="bottom-bar">
-  <span><span class="label">obs::</span> <span class="amber">unauthenticated</span></span>
+  <span><span class="label">obs::</span> <span class="green">authenticated</span></span>
   <span class="sep">//</span>
   <span><span class="label">node::</span> ds-9</span>
   <span class="sep">//</span>
@@ -1074,6 +1267,7 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
 </div>
 
 <script>
+  // Particles
   const particlesContainer = document.getElementById('particles');
   for (let i = 0; i < 30; i++) {
     const p = document.createElement('div');
@@ -1085,6 +1279,7 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
     particlesContainer.appendChild(p);
   }
 
+  // SYS TIME
   let baseSec = Math.floor(Math.random() * 1000) + 800;
   function updateTime() {
     baseSec++;
@@ -1102,27 +1297,85 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
   }
   setInterval(updateTime, 1000);
 
+  // ━━━━━━━━ BOOT SEQUENCE ━━━━━━━━
   setTimeout(() => {
     document.querySelector('.boot-header').classList.add('on');
   }, 100);
 
   const bootLines = document.querySelectorAll('.boot-overlay .boot-line');
   bootLines.forEach((line, i) => {
-    setTimeout(() => line.classList.add('on'), 500 + i * 280);
+    setTimeout(() => line.classList.add('on'), 500 + i * 260);
   });
 
-  // Show welcome dedication during boot (before transitioning out)
-  const welcomeShowTime = 500 + bootLines.length * 280 + 400;
+  // ━━━━━━━━ AUTHENTICATION SEQUENCE ━━━━━━━━
+  // After boot lines complete, start the operator authentication
+  const authStartTime = 500 + bootLines.length * 260 + 600;
+  const authStage = document.getElementById('authStage');
+  const authLabel = document.getElementById('authLabel');
+  const authName = document.getElementById('authName');
+  const authStatus = document.getElementById('authStatus');
+  const authMeta = document.getElementById('authMeta');
+
+  const names = ['ASIYA', 'ALI', 'AHMED'];
+  const nameMeta = [
+    'legacy signature recognized // archive directive intact',
+    'co-operator signature recognized // secondary clearance verified',
+    'co-operator signature recognized // tertiary clearance verified'
+  ];
+
+  function showName(idx) {
+    return new Promise(resolve => {
+      // Reset states
+      authLabel.classList.remove('on');
+      authName.classList.remove('on', 'scanning', 'granted');
+      authStatus.classList.remove('on');
+      authMeta.classList.remove('on');
+      authName.textContent = names[idx];
+      authMeta.textContent = '▶ ' + nameMeta[idx];
+
+      // Show label
+      setTimeout(() => authLabel.classList.add('on'), 100);
+
+      // Show name with scan animation
+      setTimeout(() => {
+        authName.classList.add('on', 'scanning');
+      }, 400);
+
+      // Show "ACCESS GRANTED" + flicker on name
+      setTimeout(() => {
+        authName.classList.add('granted');
+        authStatus.classList.add('on');
+      }, 1100);
+
+      // Show meta info
+      setTimeout(() => {
+        authMeta.classList.add('on');
+      }, 1400);
+
+      // Hold then resolve
+      setTimeout(() => resolve(), 2200);
+    });
+  }
+
+  async function runAuthSequence() {
+    authStage.classList.add('active');
+    for (let i = 0; i < names.length; i++) {
+      await showName(i);
+    }
+  }
+
   setTimeout(() => {
-    document.getElementById('bootWelcome').classList.add('on');
-  }, welcomeShowTime);
+    runAuthSequence().then(() => {
+      // After auth complete, transition to main interface
+      setTimeout(() => {
+        document.getElementById('boot').classList.add('done');
+        revealMain();
+      }, 500);
+    });
+  }, authStartTime);
 
-  // Hold the welcome on screen for a moment before fading
-  const totalBootTime = welcomeShowTime + 2200;
-
-  setTimeout(() => {
-    document.getElementById('boot').classList.add('done');
-
+  // ━━━━━━━━ MAIN INTERFACE REVEAL ━━━━━━━━
+  function revealMain() {
     document.querySelectorAll('.recovery-header .line').forEach(line => {
       const delay = parseInt(line.dataset.delay) || 0;
       setTimeout(() => line.classList.add('on'), delay);
@@ -1163,12 +1416,11 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
       document.getElementById('dedication').classList.add('on');
     }, 3500);
 
-    // Once everything has loaded and settled, start the periodic console flicker
+    // Start console flicker after everything settles
     setTimeout(() => {
       document.body.classList.add('console-active');
-    }, 5000);
-
-  }, totalBootTime);
+    }, 6000);
+  }
 
   function submitAccess(e) {
     e.preventDefault();
