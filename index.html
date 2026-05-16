@@ -71,9 +71,6 @@
   }
 
   /* ━━━━━━━━ POWER FLICKER ━━━━━━━━ */
-  /* Whole-page brightness flicker - simulates failing power, no movement */
-  @keyframes powerFlicker {
-    0%, 100% { opacity: 1; }
     8% { opacity: 1; }
     8.5% { opacity: 0.4; }
     9% { opacity: 1; }
@@ -93,9 +90,6 @@
     87.9% { opacity: 1; }
   }
 
-  /* Sharp single-frame blackouts */
-  @keyframes brownout {
-    0%, 100% { filter: brightness(1); }
     23% { filter: brightness(1); }
     23.2% { filter: brightness(0.15); }
     23.4% { filter: brightness(1); }
@@ -104,9 +98,6 @@
     71.5% { filter: brightness(1); }
   }
 
-  /* Individual element flicker - faster, more erratic */
-  @keyframes elemFlicker {
-    0%, 100% { opacity: 1; }
     19% { opacity: 1; }
     19.2% { opacity: 0.3; }
     19.4% { opacity: 1; }
@@ -118,9 +109,6 @@
     78.6% { opacity: 1; }
   }
 
-  /* Subsystem instability - amber elements */
-  @keyframes amberFlicker {
-    0%, 100% { opacity: 1; text-shadow: 0 0 4px var(--amber-glow); }
     11% { opacity: 1; }
     11.2% { opacity: 0.4; text-shadow: none; }
     11.4% { opacity: 1; text-shadow: 0 0 4px var(--amber-glow); }
@@ -129,10 +117,6 @@
     56.6% { opacity: 1; }
   }
 
-  /* Apply page-wide power flicker */
-  body {
-    animation: powerFlicker 11s steps(1) infinite, brownout 17s steps(1) infinite;
-  }
 
   /* ━━━━━━━━ TOP STATUS BAR ━━━━━━━━ */
   .top-bar {
@@ -148,13 +132,12 @@
     flex-wrap: wrap;
     gap: 12px;
     background: rgba(0,0,0,0.6);
-    animation: elemFlicker 9s steps(1) infinite;
   }
 
   .top-bar .left, .top-bar .right { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
   .top-bar .amber { color: var(--amber); }
   .top-bar .green { color: var(--green); }
-  .top-bar .red { color: var(--red); animation: amberFlicker 13s steps(1) infinite; }
+  .top-bar .red { color: var(--red); }
   .top-bar .cyan { color: var(--cyan); }
   .top-bar .sep { color: var(--phosphor-faint); }
 
@@ -174,8 +157,8 @@
   .recovery-header .line.on { opacity: 1; }
   .recovery-header .label { color: var(--phosphor-dim); display: inline-block; min-width: 220px; }
   .recovery-header .status-ok { color: var(--green); }
-  .recovery-header .status-warn { color: var(--warning); animation: amberFlicker 8s steps(1) infinite; }
-  .recovery-header .status-fail { color: var(--red); animation: elemFlicker 6s steps(1) infinite; }
+  .recovery-header .status-warn { color: var(--warning); }
+  .recovery-header .status-fail { color: var(--red); }
   .recovery-header .status-cold { color: var(--cyan); }
 
   /* ━━━━━━━━ MAIN GRID ━━━━━━━━ */
@@ -194,7 +177,6 @@
     padding: 20px 24px;
     background: rgba(5,5,7,0.92);
     position: relative;
-    animation: elemFlicker 23s steps(1) infinite;
   }
 
   .panel-tag {
@@ -222,7 +204,6 @@
     opacity: 0.6;
     transform: rotate(-2deg);
     background: rgba(138,58,42,0.05);
-    animation: elemFlicker 19s steps(1) infinite;
   }
 
   /* ━━━━━━━━ LOGO ━━━━━━━━ */
@@ -248,12 +229,8 @@
 
   .logo.on {
     opacity: 1;
-    animation: logoFlicker 7s steps(1) infinite;
   }
 
-  /* Logo-specific aggressive flicker */
-  @keyframes logoFlicker {
-    0%, 100% { opacity: 1; text-shadow: 0 0 4px rgba(200,196,184,0.5), 0 0 12px rgba(200,196,184,0.2); }
     13% { opacity: 1; }
     13.3% { opacity: 0.2; text-shadow: none; }
     13.6% { opacity: 0.7; }
@@ -342,7 +319,6 @@
     margin-bottom: 6px;
     border-bottom: 1px dashed var(--rune);
     padding-bottom: 4px;
-    animation: amberFlicker 15s steps(1) infinite;
   }
 
   .data-block .body { color: var(--phosphor); padding-left: 4px; }
@@ -359,12 +335,11 @@
   .data-block .val.green { color: var(--green); }
   .data-block .val.warn { color: var(--warning); }
   .data-block .val.cyan { color: var(--cyan); }
-  .data-block .val.red { color: var(--red); animation: elemFlicker 11s steps(1) infinite; }
+  .data-block .val.red { color: var(--red); }
 
   .corrupt {
     color: var(--phosphor-faint);
     letter-spacing: 0.05em;
-    animation: elemFlicker 4s steps(1) infinite;
   }
 
   /* ━━━━━━━━ FUSION STATUS PANEL ━━━━━━━━ */
@@ -376,7 +351,6 @@
     font-size: 11px;
     opacity: 0;
     transition: opacity 0.7s ease-out;
-    animation: elemFlicker 21s steps(1) infinite;
   }
 
   .fusion-panel.on { opacity: 1; }
@@ -421,8 +395,8 @@
   .fusion-panel .row .label { color: var(--phosphor-dim); text-transform: uppercase; letter-spacing: 0.12em; }
   .fusion-panel .row .val { color: var(--phosphor); }
   .fusion-panel .row .val.green { color: var(--green); }
-  .fusion-panel .row .val.warn { color: var(--warning); animation: amberFlicker 9s steps(1) infinite; }
-  .fusion-panel .row .val.red { color: var(--red); animation: elemFlicker 7s steps(1) infinite; }
+  .fusion-panel .row .val.warn { color: var(--warning); }
+  .fusion-panel .row .val.red { color: var(--red); }
 
   /* ━━━━━━━━ ACCESS FORM ━━━━━━━━ */
   .access {
@@ -546,7 +520,6 @@
     opacity: 0;
     transition: opacity 1.4s ease-out 0.6s;
     background: #000;
-    animation: elemFlicker 27s steps(1) infinite;
   }
 
   .landscape.on { opacity: 1; }
@@ -581,7 +554,6 @@
     padding: 6px 10px;
     border: 1px solid var(--amber-dim);
     text-align: right;
-    animation: amberFlicker 16s steps(1) infinite;
   }
 
   .scan-readout .label { color: var(--phosphor-faint); }
@@ -606,7 +578,7 @@
 
   .telemetry .green { color: var(--green); }
   .telemetry .amber { color: var(--amber); }
-  .telemetry .warn { color: var(--warning); animation: amberFlicker 12s steps(1) infinite; }
+  .telemetry .warn { color: var(--warning); }
 
   .particles {
     position: absolute; inset: 0;
@@ -710,7 +682,7 @@
   .bottom-bar .label { color: var(--phosphor-faint); }
   .bottom-bar .green { color: var(--green); }
   .bottom-bar .amber { color: var(--amber); }
-  .bottom-bar .red { color: var(--red); animation: elemFlicker 13s steps(1) infinite; }
+  .bottom-bar .red { color: var(--red); }
   .bottom-bar .sep { color: var(--phosphor-faint); }
 
   /* ━━━━━━━━ BOOT OVERLAY ━━━━━━━━ */
@@ -725,12 +697,8 @@
     color: var(--phosphor);
     transition: opacity 1s ease-out;
     overflow: hidden;
-    animation: bootFlicker 3s steps(1) infinite;
   }
 
-  /* Boot screen has its own flicker pattern - more aggressive during startup */
-  @keyframes bootFlicker {
-    0%, 100% { opacity: 1; }
     24% { opacity: 1; }
     24.5% { opacity: 0.4; }
     25% { opacity: 1; }
@@ -830,6 +798,19 @@
     .recovery-header .label { min-width: 140px; }
     body { font-size: 12px; }
   }
+
+  /* Console-wide power flicker - applied after full load by JS */
+  @keyframes consoleFlicker {
+    0%, 100% { opacity: 1; filter: brightness(1); }
+    1.2% { opacity: 0.25; filter: brightness(0.3); }
+    1.8% { opacity: 0.85; filter: brightness(0.7); }
+    2.4% { opacity: 1; filter: brightness(1); }
+  }
+
+  body.console-active {
+    animation: consoleFlicker 17s steps(1) infinite;
+  }
+
 </style>
 </head>
 <body>
@@ -1181,6 +1162,11 @@ i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i
     setTimeout(() => {
       document.getElementById('dedication').classList.add('on');
     }, 3500);
+
+    // Once everything has loaded and settled, start the periodic console flicker
+    setTimeout(() => {
+      document.body.classList.add('console-active');
+    }, 5000);
 
   }, totalBootTime);
 
