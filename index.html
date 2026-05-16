@@ -11,13 +11,15 @@
 <style>
   :root {
     --bg: #000000;
-    --fg: #d4d4d4;
-    --dim: #666666;
-    --accent: #ffffff;
+    --fg: #d8d2c4;
+    --dim: #5a5448;
+    --accent: #fff5d6;
+    --gold: #f5c651;
+    --gold-deep: #c89417;
+    --green: #6dd47a;
+    --green-dim: #3a8044;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html, body {
     background: var(--bg);
     color: var(--fg);
@@ -26,58 +28,32 @@
     overflow-x: hidden;
     cursor: crosshair;
   }
-
   body::before {
     content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.04) 0,
-      rgba(255,255,255,0.04) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    pointer-events: none;
-    z-index: 9999;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px);
+    pointer-events: none; z-index: 9999;
   }
-
   body::after {
     content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.5) 100%);
-    pointer-events: none;
-    z-index: 9998;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none; z-index: 9998;
   }
-
   .top-bar {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 28px;
-    font-size: 11px;
-    color: var(--fg);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--dim);
-    flex-wrap: wrap;
-    gap: 12px;
+    display: flex; justify-content: space-between;
+    padding: 16px 28px; font-size: 11px; color: var(--fg);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--dim); flex-wrap: wrap; gap: 12px;
   }
-
   .top-bar .left, .top-bar .right { display: flex; gap: 20px; flex-wrap: wrap; }
-
+  .top-bar .green { color: var(--green); }
   .welcome {
-    padding: 14px 28px;
-    font-size: 12px;
-    color: var(--fg);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    line-height: 1.7;
+    padding: 14px 28px; font-size: 12px; color: var(--fg);
+    text-transform: uppercase; letter-spacing: 0.1em; line-height: 1.7;
   }
-
   .welcome .line { opacity: 0; }
   .welcome .line.on { opacity: 1; }
-
   .main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -85,222 +61,158 @@
     padding: 0 28px 28px 28px;
     min-height: calc(100vh - 220px);
   }
-
   .terminal-window {
     border: 1px solid var(--dim);
     padding: 12px 20px 20px 20px;
     position: relative;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.85);
+    z-index: 2;
   }
-
   .terminal-window::before {
     content: '×─ □ ×';
-    position: absolute;
-    top: 6px;
-    left: 12px;
-    font-size: 11px;
-    color: var(--dim);
-    letter-spacing: 0.4em;
+    position: absolute; top: 6px; left: 12px;
+    font-size: 11px; color: var(--dim); letter-spacing: 0.4em;
   }
-
   .logo {
     font-family: 'VT323', monospace;
     font-size: clamp(50px, 9vw, 110px);
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    color: var(--accent);
-    margin-top: 22px;
-    margin-bottom: 12px;
-    text-shadow: 0 0 30px rgba(255,255,255,0.15);
-    opacity: 0;
-    transform: scale(0.95);
+    line-height: 0.95; letter-spacing: -0.02em;
+    color: var(--gold);
+    margin-top: 22px; margin-bottom: 12px;
+    text-shadow: 0 0 12px var(--gold), 0 0 28px var(--gold-deep), 0 0 60px rgba(245,198,81,0.4), 0 0 100px rgba(245,198,81,0.15);
+    opacity: 0; transform: scale(0.95);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    animation-fill-mode: forwards;
   }
-
-  .logo.on {
-    opacity: 1;
-    transform: scale(1);
+  .logo.on { opacity: 1; transform: scale(1); animation: pulse 4s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { text-shadow: 0 0 12px var(--gold), 0 0 28px var(--gold-deep), 0 0 60px rgba(245,198,81,0.4), 0 0 100px rgba(245,198,81,0.15); }
+    50% { text-shadow: 0 0 16px var(--gold), 0 0 36px var(--gold-deep), 0 0 80px rgba(245,198,81,0.55), 0 0 130px rgba(245,198,81,0.25); }
   }
-
   .logo .underscore {
-    display: inline-block;
+    display: inline-block; color: var(--green);
     animation: blink 1.2s steps(1) infinite;
+    text-shadow: 0 0 8px var(--green), 0 0 20px var(--green-dim);
   }
-
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-
   .tagline {
-    font-size: 13px;
-    color: var(--fg);
-    margin-bottom: 28px;
-    opacity: 0;
+    font-size: 13px; color: var(--fg);
+    margin-bottom: 28px; opacity: 0;
     transition: opacity 0.6s ease-out 0.3s;
   }
-
   .tagline.on { opacity: 1; }
-
-  .tagline::before {
-    content: '> ';
-    color: var(--fg);
-  }
-
+  .tagline::before { content: '> '; color: var(--green); text-shadow: 0 0 6px var(--green-dim); }
   .cmd-block {
-    margin-bottom: 18px;
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0;
-    transform: translateY(8px);
+    margin-bottom: 18px; font-size: 13px; line-height: 1.6;
+    opacity: 0; transform: translateY(8px);
     transition: opacity 0.4s ease-out, transform 0.4s ease-out;
   }
-
-  .cmd-block.on {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .prompt {
-    color: var(--fg);
-    margin-bottom: 6px;
-  }
-
+  .cmd-block.on { opacity: 1; transform: translateY(0); }
+  .prompt { color: var(--fg); margin-bottom: 6px; }
+  .prompt .user { color: var(--green); text-shadow: 0 0 5px var(--green-dim); }
   .prompt .cmd { color: var(--accent); }
-
   .output { color: var(--fg); }
-
   .output .row { display: flex; gap: 8px; }
-  .output .key { min-width: 110px; color: var(--fg); }
+  .output .key { min-width: 110px; color: var(--green); text-shadow: 0 0 4px var(--green-dim); }
   .output .val { flex: 1; color: var(--fg); }
-
+  .output .ok { color: var(--green); text-shadow: 0 0 6px var(--green-dim); }
   .cursor {
-    display: inline-block;
-    width: 9px;
-    height: 1em;
-    background: var(--fg);
-    vertical-align: middle;
-    animation: blink 1.2s steps(1) infinite;
-    margin-left: 4px;
+    display: inline-block; width: 9px; height: 1em;
+    background: var(--green); box-shadow: 0 0 8px var(--green);
+    vertical-align: middle; animation: blink 1.2s steps(1) infinite; margin-left: 4px;
   }
-
   .landscape {
     border-left: 1px solid var(--dim);
-    padding: 0;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     opacity: 0;
     transition: opacity 1.2s ease-out 0.5s;
+    background: #000;
   }
-
   .landscape.on { opacity: 1; }
-
   .landscape-art {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 7px;
-    line-height: 7px;
+    font-size: 6px;
+    line-height: 6px;
+    letter-spacing: 0;
     color: var(--fg);
     white-space: pre;
-    padding: 20px;
     user-select: none;
+    padding: 10px;
+    text-shadow: 0 0 1px rgba(216,210,196,0.5);
   }
-
   .bottom-bar {
-    display: flex;
-    justify-content: space-between;
-    padding: 14px 28px;
-    font-size: 11px;
-    color: var(--fg);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-top: 1px solid var(--dim);
-    flex-wrap: wrap;
-    gap: 12px;
+    display: flex; justify-content: space-between;
+    padding: 14px 28px; font-size: 11px; color: var(--fg);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    border-top: 1px solid var(--dim); flex-wrap: wrap; gap: 12px;
   }
-
+  .bottom-bar .green { color: var(--green); text-shadow: 0 0 4px var(--green-dim); }
   .dedication {
-    text-align: center;
-    padding: 14px 0;
-    font-size: 10px;
-    color: var(--dim);
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    font-style: italic;
-    opacity: 0;
-    transition: opacity 1s ease-out 2.5s;
+    text-align: center; padding: 14px 0;
+    font-size: 10px; color: var(--gold);
+    text-transform: uppercase; letter-spacing: 0.3em; font-style: italic;
+    opacity: 0; transition: opacity 1s ease-out 2.5s;
     border-top: 1px solid var(--dim);
+    text-shadow: 0 0 6px rgba(245,198,81,0.4);
   }
-
   .dedication.on { opacity: 1; }
-
   .boot-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--bg);
-    z-index: 5000;
-    padding: 40px;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--fg);
-    transition: opacity 0.8s ease-out;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg); z-index: 5000;
+    padding: 40px; font-size: 13px; line-height: 1.8;
+    color: var(--fg); transition: opacity 0.8s ease-out;
   }
-
-  .boot-overlay.done {
-    opacity: 0;
-    pointer-events: none;
-  }
-
+  .boot-overlay.done { opacity: 0; pointer-events: none; }
   .boot-overlay .boot-line { opacity: 0; }
   .boot-overlay .boot-line.on { opacity: 1; }
-
-  .logo:hover {
-    animation: glitch 0.3s steps(2) 2;
-  }
-
+  .boot-overlay .ok { color: var(--green); text-shadow: 0 0 6px var(--green-dim); }
+  .logo:hover { animation: glitch 0.3s steps(2) 2, pulse 4s ease-in-out infinite; }
   @keyframes glitch {
     0% { transform: translate(0); }
-    20% { transform: translate(-2px, 1px); text-shadow: 2px 0 0 rgba(255,0,80,0.5), -2px 0 0 rgba(0,255,255,0.5); }
+    20% { transform: translate(-2px, 1px); }
     40% { transform: translate(2px, -1px); }
-    60% { transform: translate(-1px, -1px); text-shadow: -2px 0 0 rgba(255,0,80,0.5), 2px 0 0 rgba(0,255,255,0.5); }
+    60% { transform: translate(-1px, -1px); }
     80% { transform: translate(1px, 1px); }
-    100% { transform: translate(0); text-shadow: 0 0 30px rgba(255,255,255,0.15); }
+    100% { transform: translate(0); }
   }
-
   @media (max-width: 900px) {
     .main { grid-template-columns: 1fr; }
-    .landscape { border-left: none; border-top: 1px solid var(--dim); max-height: 200px; }
-    .landscape-art { font-size: 5px; line-height: 5px; }
+    .landscape { border-left: none; border-top: 1px solid var(--dim); }
+    .landscape-art { font-size: 4px; line-height: 4px; }
     .output .key { min-width: 90px; }
   }
-
   @media (max-width: 600px) {
     .top-bar, .welcome, .bottom-bar { padding-left: 16px; padding-right: 16px; }
     .main { padding: 0 16px 16px 16px; }
     .terminal-window { padding: 12px 14px 16px 14px; }
+    .landscape-art { font-size: 3px; line-height: 3px; }
   }
 </style>
 </head>
 <body>
 
 <div class="boot-overlay" id="boot">
-  <div class="boot-line">> initializing glitchlabs.systems...</div>
-  <div class="boot-line">> establishing secure connection...</div>
-  <div class="boot-line">> handshake protocol NT6-442A ........ OK</div>
-  <div class="boot-line">> authenticating clearance level: 3 .... OK</div>
-  <div class="boot-line">> decrypting node DS-9-17 .............. OK</div>
-  <div class="boot-line">> mounting terminal interface .......... OK</div>
-  <div class="boot-line">> loading lore database ................ OK</div>
-  <div class="boot-line">> ready.</div>
+  <div class="boot-line">&gt; initializing glitchlabs.systems...</div>
+  <div class="boot-line">&gt; establishing secure connection...</div>
+  <div class="boot-line">&gt; handshake protocol NT6-442A ........ <span class="ok">OK</span></div>
+  <div class="boot-line">&gt; authenticating clearance level: 3 .... <span class="ok">OK</span></div>
+  <div class="boot-line">&gt; decrypting node DS-9-17 .............. <span class="ok">OK</span></div>
+  <div class="boot-line">&gt; mounting terminal interface .......... <span class="ok">OK</span></div>
+  <div class="boot-line">&gt; loading lore database ................ <span class="ok">OK</span></div>
+  <div class="boot-line">&gt; <span class="ok">ready.</span></div>
 </div>
 
 <div class="top-bar">
   <div class="left">
     <span>GLITCHLABS.SYSTEMS v1.2.7</span>
-    <span>:: TERMINAL SECURE MODE</span>
+    <span class="green">:: TERMINAL SECURE MODE</span>
   </div>
   <div class="right">
     <span>SYS TIME <span id="systime">00:13:37:42</span></span>
-    <span>CONNECTION: DEEPSPACE-9</span>
+    <span class="green">CONNECTION: DEEPSPACE-9</span>
   </div>
 </div>
 
@@ -317,7 +229,7 @@
     <div class="tagline" id="tagline">infrastructure for products that don't fit.</div>
 
     <div class="cmd-block" data-delay="1200">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cmd">help</span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cmd">help</span></div>
       <div class="output">
         AVAILABLE COMMANDS:<br>
         &nbsp;&nbsp;about &nbsp;&nbsp;&nbsp;&nbsp;- company background<br>
@@ -331,7 +243,7 @@
     </div>
 
     <div class="cmd-block" data-delay="1500">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cmd">about</span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cmd">about</span></div>
       <div class="output">
         glitch labs builds products that operate<br>
         outside the expected. small deviations.<br>
@@ -342,20 +254,20 @@
     </div>
 
     <div class="cmd-block" data-delay="1800">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cmd">product glitch_donut.exe</span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cmd">product glitch_donut.exe</span></div>
       <div class="output">
         <div class="row"><span class="key">product:</span><span class="val">glitch_donut.exe</span></div>
         <div class="row"><span class="key">type:</span><span class="val">edible anomaly</span></div>
         <div class="row"><span class="key">function:</span><span class="val">introduces minor deviations in the perceived normal.</span></div>
         <div class="row"><span class="key">side effects:</span><span class="val">may include heightened perception, curiosity, and brief discomfort with repetition.</span></div>
-        <div class="row"><span class="key">status:</span><span class="val">licensed</span></div>
+        <div class="row"><span class="key">status:</span><span class="val"><span class="ok">licensed</span></span></div>
         <div class="row"><span class="key">distribution:</span><span class="val">public</span></div>
         <div class="row"><span class="key">warning:</span><span class="val">consume responsibly.</span></div>
       </div>
     </div>
 
     <div class="cmd-block" data-delay="2100">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cmd">mission</span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cmd">mission</span></div>
       <div class="output">
         we build products for people who are tired<br>
         of predictable. nothing here is an accident.<br>
@@ -364,7 +276,7 @@
     </div>
 
     <div class="cmd-block" data-delay="2400">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cmd">slogan</span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cmd">slogan</span></div>
       <div class="output">
         normal is default.<br>
         we ship different.
@@ -372,12 +284,61 @@
     </div>
 
     <div class="cmd-block" data-delay="2700">
-      <div class="prompt">glitchlabs@systems:~$ <span class="cursor"></span></div>
+      <div class="prompt"><span class="user">glitchlabs@systems:~$</span> <span class="cursor"></span></div>
     </div>
   </div>
 
   <div class="landscape" id="landscape">
-    <pre class="landscape-art" id="landscapeArt"></pre>
+    <pre class="landscape-art">█▓▓█▒▓█▓█▓▒▒▒▒%%▓▓▒▒▒▒#**=▓██████▓██████████████%▒█▓▓▓█▓%#%▓▓▓▓%%▒▓▒▓███████▒######%▒▒▒▒▒██████▓████▒▓▒%▒▓▒▒%*%▒%▓███████████▓▒%###########****#####▒%%%%▒▒%▓██▓▓██▓▓███▓▓▓█▓████%▒%
+█▓▓▒▓▓▓▓▒▓▒▒▒%▒▓▒▒▓▓▓▒▓▓▓▒▓████████▓▓▓▓████▓▓▓▓▓▓█▓▓███▓▒=#▓██▓▒*#▒%▒▒#!+*!!+!i;;;;i;;;;;;;ii;;i!+=,!=!=#%#%#%*##%▓%▓▓▒▓▓██▓███▓%▒##%#▒▒▒▒%#%▒%%*==%▓▒#▓▓▒▒█▓█▓▒▒▓█▒▓▒▒▒▓▓▓▓███████▓
+▓▒%%%▓▓█▓▒▒▒▒%▒▒▒▒#%%%▒▓▓*+=*%*#%▒▒▓▓▓▓█▓▓▓▓▓▒▓▓▒%▒▒***#%▒▓▒%####+!!+!;;;;;:::;::;;ii;i!;:i:;*=##**=%%#▒%#%#%%%%=+!#%*#▒*%%#▒▓▓███▓▓▒▓▓%%▒▓▓%#▒%=%▒████▓████▓%▒█▓%▒##**%▒*#%%%▒█▓▒▒▒
+▒▒%▒###%%*##*%=*▒#*▒*%▒▒▓▒▒%%#*=+#==#***=**#%%%▒▒▒▒=;;;;iii;iiii;;iiiii;;;;iii;i!ii;;;:;+!;:*██▓▓▒▒!*%#%%##▒#%%%+'...:!i*;+++!!=**%▒*%**#=*#=**▒#=▒%%█%██▓##%#%████▒▓▒▒██▓▓█#%▓▒▓█#%
+##%**%*=▓%#%#*=#*####%##%%▒▒▓▒▒▒%▓▓%▒%###%%%%%#++!i;i;;;;::;::::::,,::::;;;;i;i;i+;i,.i=#%%▓█▒▓▓▓▒#+#▒▒▒▒▒▒▓*i▓%▒▒*=++=%+;:,+*=!*;;=##%=##==%▓▒#=!i!+*+*#*+%%▒▓█*▓▓▓▒█▓#█▓█▓▓▓▒%▓▒%▓
+▒%%%%%%##▒%++ii!+=#=#%%###%%%%%▒▒▒▒#=*#%%▒%%%*;:::::::::::::,;:;:;!i!iiii;,,''+'!▒%▒i.:!+*+=▒#**=%!';%▒#%%%▒#=*%▒▒▒+=*#%=++=*#+=*; ;*+*=%!**#%*=*=+++*=##*#▒█▒▓▒%▒▒*#▒%***%▒█#%%=+%#
+*****==++*=!i++i;:;!#%%%%#%%####*=*#%▒▓▓%==##=,:::,,,,,,:,'''','!▒%#%▓▓▒%▒▓#=+*=;;i*▒#%▒#===%%▒!;=+*%▒=!i!#*!=i#%▒*%▒▒#=;!*%#%###++=!ii%#!=+=*##*#*=!;i+++;:ii:;;ii+!+*=!**=%%*%▒*%#
+**=##▒%%#=#*#%%%#*!;;*%####**==*#%%###=!!=**=:,,,,,,''...,,:;+:=█**%▒▓%%▒▓▓=+*%▒▒!=%==▒%%*=#%▒!;=▒=,*▒!.   .',.'',;+=!*#+=%=++#%%i',,'',+%*=!;*#*%▓▒▒%*+!==+ii;:;++#!=#==!*=+*%▒▒%▓█
+*#*##%%▒%###***+*▒▒▒##%#%%%##%#*%#%#%▒%▒%%%+,,,,,,'',!!!*%▒%▓%%#==▓▒▓▓#▒▒%!=▒▒#=:!#++*▒%%▒▒▒▒%=▒#*.'#█; ..    .        '  :i;!,:i,   .',*#'.;%%##*#▒███▓ii;;;!i;!=#▒**===+==***=+##=
+##%▓%*****#*##%▒##%▒▒%##%%▓▒%▓▓▓▒▒%▒*===*=:',,,,'.i#▒▓▓▓█▓▒▓##**▓%▒▓%▒%█+!▒▒*;i=*#!=*#*%▒▒▓*=+i:!  ':,'.            .:!i!+#▒▒▒#+!+*=+i'.,  .;;,',!!i+!=▒%#%=+=%#+i+*+#!:;!!!+!!+===+
+%*!=%%*%%▒▒%*#=%##%▓%▒#%▓▒▒▒#%###*======!,,,''..':▒▓▓▓▒▓▓█▓#**▒▒#%▒▒▒█▒+:%▓!i%▒#*!==*#▒▓▒▒!:!!i   .      .       ,,+▒*+*▓%▒#▒▒%▒##▒▓▒%=+iii'' ,i=%***+;:;i+!+=*#==**#▒*+=%=*+*=!i;;!
+▒▒#▓%▒▓#**%█▓▓##%▒▒▒▒▓▒*%#%**=!+*+!+++!:'''..';!i*▓▓▓▓▒▓▓▓*=%▒▓*%▒▒▒▒#ii▓█*=#%!i,;=+%*++i'     :i!;: .,+#%=: =%,**%▓! +%+%▒*%▒%%#▒#*%%#▒▒▒%%%*i▒!==#*%▒#:;;!+!!::+=+=####*=+++++=++*
+===**=**=****#%*%#####==*+!=**#*+=*=!;,.'',;+===%█▓▓█▓▒▒▓▒#▓▒#=%%*##+*#%#!,,. .. ''..      :,i##%*i;i*▓▒##▓!,; =█i#▓; +#!#*%#%▒▒#*%#*#i*▒▒#%#%=*##=*#=%*i#▒;+#+*:*%##▒##*###%i;i!+!+
+====++==**====+i!==++#*#!+***=++=!i;'';!!+*#**%▓▓▒▓▒▓▒▓▓#iii' .:' . ':,               ;i+=%%▒▒+*#▒!##%%%%%! .'=▒▒###='**##+%*##▓%##%#%#*%%▒%%%%*%%%#%▒=:*%;'%%#=#*###=%▒%%##▓▒▒i+i;,
+▓▓▓▓%%▒**+i++==++**i=**i!#*+=*##i'','',;=%%%%%%▒█%▒▓▒*+;.   ...  .                 ,;%▒▓█▓%%▒=%▓!#+=%+=▒#: .;*▒%%#==%+!%%#*%*%=*▒%*#%%#▒▒#%▒%%▒%%#%%#=+*##*=**+#%*=**+%%%=!+==i=i:i,
++ii=*=*+!+#*#%%%****#=i+▓▒#█▓#*:'''.'..'',:=%%#▒%==!,.. .....                    '=▒=%%%*%▒▒*#%!+%=+%=▓% ,;;i=▓▒▒%#%*%=**#**▒%%=*#▒##%%%▒▒%####%▒▒▒%*#+▒▓▓██*=#=*=+i:;;:=; .'.,:,;;;
+##=i=*##+*=+ii+=!i!#!i*#█#▒▒#+:''.''......  ',''. ..........            ::,'''=+*▒▓%*%▒%+%▒%#▒;*%*#**%*.,+,;=*▒▒▒###=▒#*▒++##▒###**%%#*###▒▒▒%##%%▒▓▓%#=#▓▒+!+!++=▓▒+*#%▒*+!ii;,,,::
+*i!i=#=:!+!i+#*+:,i;i#=*=*!,;',''''.'....          ...  ...        ,+=!+▓██▓▒▓**▒%#▒▒=#▒#==▒%=+%=%▒#=! !%i!#▓▓#%▒%%##%%###%##%##%*#=%▒#*###▒▒▒%%#%*+#*#▓#==*****+*#%####%#▓█%*;,,,,:
+=iii+*:i=:ii+=:  ::i*;i#%*i;++;....' .' .   .       ...  .    .i+=#▒▓▒▓%*=##▒%#▒#%*#%%%%▒=#▒%=##%▒*i' =#+=*=%%*=+**##%#**%#*%##**##=*▒▒▒%####%%%%==#*%*i;==**##*#===###=**##**!::::;
+!;!+!;i=;;**+'+!;:+=,:%=*!i:;;  ,,:, !i'i',.;..'. .''. .'';!!+▒▒▒▓▒%▒%#*##**%#%*#%%#▒%%%▓%**=%##▒=:. +%###!!#*++####%###**##**=###**##▓▒▒▒▒%#**=!,;=!:;';,',',;+=##=!i!++++!;i::!==#
+█%!;,;i!*+=:  ;!,!i,*#▓*i,!,. ,;!=;  ,        '     ..'+%%%%*▒▒▒%%▒▓%#%%▓▓▒▒%##*#▒%**▒▒%%%%+#%%=.,+.!▒#%%#i%*!+%▒%%%%%###****#####*****#%#*=+!+;;#▒*#!%=*%#!!!i;::;;ii;:,,;!+%▒*+%#=
+%,!=+i:+=;:;i:::+;i%##%i:'..,.;::,              :!+=**%%%%%+%▓▒▒%▒▒!i▒▓▒▒▒▒▒▒%%%*%#!!#%▒▒%#%#%# i%;;%%#%%▒*#=!▒*#%%#######%**#####*=++!!===+*%+!i;!!*+*▒=***i,!=#i,i!+**#*!:;+==*▒▒▒
+;##*▓%▒%!i#▒*:;=;i=##*i .';;'.::.;=*=;ii!!+*+:''i!+*!+▒%%#i%▒▒▒%%*::%%#%▒%%%%%##%##++%=+*%%%#▒*+%!:▒%▒%%▒▒▒*=%%####%%####*##!!#*++*i;*#!+!++=i+!;,!i:i;i=*=+;,;=▓▓%*i,i!+i!i:::!!i+%
+▒=,#*i;%!i+;::+i▒#=%i    .';=▒▓*#▒*=*▒▒###%#▒▒%#+==*%###%=%▒▒▒%+,,+▒#+#%#%%▒%▒▓%!**=*#=#%%%%▒=:!!i%%*==+!+!**▒%#%##*=+==;.*++*▒==i',;;:i=!*#▒▓▒##=%▒**+#=+=*=#+;!+#*=++=+i!+!!!i!::i
+i!+%+=#%*,;,;=;██!+. ,,:,;=▒█%+#++##=*%##**##%#*#**##▒#▒%#%▒▓#!i=%%*!#%%##▒▓▓%▒##*=*!*%▒▒▓▓%i.;'.;i,,:.,':,.!;:;;:::,:ii:.:=iiii+*i!▓*:;=#i!==+=+=+i=i=%#;;#!+i''',:!!=***=+i;;,::,.
+%#%+=***:,::#;▒%:,  +%▓%#▒##+**;=▓=;+*%######%#=*#***#▒▒*#*;:;i#▒%****▒▒%!+=*▓▓#▒%▓▓▒▓▒+ii::.;i:,:;::,,:+i;;+#!.';ii!!;::!+#==#*i!▒*#▒%;''##%▓ii#i;;!+++=' .,,,::''.,,:;;+===***+!;.
+##:;i:i,:,'#,i;. .:#%%%%%%%+*!!#█*i%█%#%#*##*###*+=!::i=*; ,ii!**##%#%%▓%#%*!+%#▒%%###=':'::, ',::::,i;#*=+!;!+;;=▓*!=ii#+=+!+;:+;!i:',i!!=*;,i==;,;,..':!i:.',,!i  ;=::':i=*+==*+:i
+:,:%█!:;! =i;:',i=%%%%%%##*%=i#▒#i#▓%▒%▓%#%▓▓▓▒▒▒%%+*%++  =%#%▓▒*##%▒*=##▒%#▒▒#%=:i:,,:;','';,i!=++!==i==+!ii+*=;:,:.i=;,'..'..,;:i!ii*=+++!;.  '.,.,.'.';;i;,:..,::'..:'':';::,;i!=
+'i#=i;*;,'i!=!=#***%%#***#%=!▓█=i=▒▒▒%▒%%▒%i;i+*%%%%%=*:+%%%▒▒%%▒▒▒▒*%▒%▓▒%%%*+;,',::,;,,;▒;''':!!+!i!++!+=i;=!:,;' ''.:::+,,,,'''.,;;!*!i:;=#:  '..,,'..':!+;'..i!;:',:,, ..'',,':;
+i+i;=#i;..++#%####%%*****#▒%▓▒i;*▒▓%▒▒%%▒▓i:!+!!:i=#▒▒!;+i#▒▒%▒▒=!!i**=#*;,,,;i+=:,!;,=#ii#▓!:+ii; ,'':..,:!+=!i;:, .''!i,,;,....';,.,,=#=i+!+=*!:. .,, ..:'',;;.   . ..'.':,.,   .,
+;;.:!=;,.;+++=*%▒%*=***##%▒%!'i#*#%▒▒%%#%i=██▒%*+;:;i=*▓▒*%=+=+:.': ',i;;++%%++!!+i  ' +=;*i*i;*%%*=!ii,',;'.:i;ii;:  ',,,i,,:, .  ..''' ;;;:,:i*#!,.  .''''.''!!:''...''.,.'.' ...'
+!i::::,',i!i!!;;;!;:#*%#**+,;*#*=%%%#%%*+#█▒#▒▒▓█▓▒#===#+!.  ''  ,.!#!i=;:;iii=+▒#*! ',:+==+=+!==!:,;,i+;+*,',i!#+;!i'',:,i+=+%=,,,''.,':i!!:!!,',!==;' .'',.:;'..'. '  ..   .'..   
+'... :+;,:i!;+!!ii!i,:,!#=*!**###▒▒%%%%#▓██▒███▒%%%=ii:,,,;!==;',,,!█▓;;i,::*+#*==!=!'::,i*+;*,::,;:i*i;'ii,,'';:,'.',,,''':!;;;:::::::::,';i+!!ii!=+++i!,+:;,;,;;;,:;':;.     .  .'
+#▒##!';. :''',;!::+##;i:i%▒%%%#%%▒*+=*=*%*=+*i;,:;i:!!ii!!;%█.,= '',;%=:,,,.,!:;;*i'   ,:,!!*#:,,,,',:'.   ',':,''. ..',,'.:.'  ..     ..,'''',,'::;;::!!i!!!#+i#%+****#%+;i!,:,..,,
+!;,;i!+.'';;:::;;i;i;;;:,,:,';:,,:'.,,',:,:;'i+*▒!!'.:;;;!,.=%+█+,:ii#▒!::.'',;,';*:'...,:+;;:..'''..''...:'.        .     .'.. ';=  ...  ..,''  .,.       '':!i;;:::;;!!+=+!;:''''.
++!++:++,' ;;;!ii===+=%#=+!i+='=*+i%▒!+▓▓,=%#,▓▒▓=;,.:!:i;i!%*%%*!:i:::'' .',,,':;.:;'::.:, .  .'. '...,.'.i:,   ..''.':'::,*=:, .,:  ,,:  .;:''..  .' .,:' ' :i;!!i+!=+=+!=!!!;:,,,.
+▓██#+=i!:.;:;::i=!++!!**!+▒█;=%%;#▓█i█▓▒;##*==i' ,,.   :'i;,,''',!+i!+=:''..;,,, ''+i;,'  .:;;::;,. ..       ,.,'.:,',:::''!i,:;::,:';i,,:ii!,;,.. '++;;;;,'+!=,i####=!i:,'i'.:';;' 
+█='!=:=='.:i;;i+**#=!+▒=,=++'##+:#=!i+++!*+!;++,,;..'',:;i!++!i!+*i!,:;.ii+=+i%▓!,!'''      :+   ''.:,. ,,.' ',,:'':i. ., ' :'    .' .' ';;ii. ' '..,!;. '::.i=i,;*#%*==;,:,.,, ... 
+█=i**!=*. ,;!=%***+!;!;i▒▒▒:▒▓█;%█=:'i%!,'.,,'..  ...,;==!!,,i::,'::.    ;+!:*#!++'      . ,,   ;' '.   '    ,',',...'. ... :+..  ':.   .     . ..' .!=,'.;;  ,.,+#%*+;,''+=;::..   
+=====!+#i .;,=++i,,..!!+*==!+i;!=+=i;!!!i;:;!;'..'.  ..:,,;,,'::,i;:...  ' .  +!#%,   .  '  ' .    .  ' ..'  ..., ,. .:.. .   i,.  :      ,..ii, .!!;. ;,;',:,..;=;i,.*%+i;++i;.  . 
+!i!i!i+==. :.+!,   ;i;'' ''',%i=i!!++;!++:   ...  .'. '.;=+=#=#▒▓█,.,',.       ii    .   ., '.  ..' ',,,,,:;  '   ,.. :,'::,,;ii:,.:         ':!':'=!' .   ..',%+ii',+*%██▓▒%;,,i..'
+!!i++i+=*, ..:,:i:+#*+=i,,,+==++;;;::i;ii' . ' .',,' . ,'!!:i**=+*+i!.        .       .:, !; '    .' :..  .i,   .: :, ,; :.' : . ,i,'      ....   . ,.   . ;ii█#!;=!;+=;!##*█*:':=ii
+;;:+=i!+*+ ..'i:+#=;:!i,,;:;!:,''''.'i;::,..',,, ''':,,;:::=*!, ,  +*i.   ':'     .  .'i!:;=+:.  . '. ...''.;.  '.          '  :  :=i .  '       .    ... ;!'',i=*=**=i*%**%%#%#,'i=
+=i++=i+==#. ''!!,!...  ... .'...    ;=::;;i,;ii:,,',:',.::,':+%*,:+',i .:        '  ,. .'',,;;: .   ' .,'' ,!▓, ,,.,        .  '.  ':;  ..  ;:!, . '''  ;;,.'',,:!%+i##%**=+#!=%+.'i
+===;!!+=*%; '';!''...,:'..'.'''.,'.':  ..i, !='': ....,,..,'..::!*!.. :'        '   . ,'.''  !▒      . ',  ..▒* .,.      .=. ,,,  .  ';,,.   ,;: :;!i,,. '::::'',,;;+▒*++!!;▒i;*#i''
+**=++!+===; ..'i!=,!=!,==*!.'...    . ''':!:.' '.',,' .,'''',,,:=*+;!,                ;;.'. 'i*: ,   '. '   :'.' :,, '.  .,!..'..      ;:,'....';,i;:,,'...',:,.,';i;i+==!i!:'';;!;'
++!+==!i!!++  . i++=#=,.*=*.      ..' .i+'i▓█!:,''',,',, ::,;:;ii+!,'. .     ...... .'. ...... :....,  ' . .    '...:'   ., .... '. .  .  ':  ,:ii:.:. ',,:'..'''',,::',;=**+.   .: '
+****=+!++++. . '=;*▓;.',!:  . :,:,:;,i;++i!=#i''..'':i;:,':;:::'   .,    ., .'.... .'..''''',,;.',' ' ;:;::' '' ,.. .    '   ,    .':,;:,:';i;',.:ii;;!!!i;:,',,,,,,:,',;=,         
+%*+▒==!+=+=; .. !+.::;,++:+i:;i;::!i;i!i::i;!:,',' ';:,,',,'''  . ''.   '#+;;:;,::;;;;;!;;ii;:i::,. ...,'.'.. ,:;;+!;!!i;;;+++!:  . . ..:,.!i .::,;:i!iiiiii;:',,:'''.'.'. ..       
+;;,;!=++==*+ .. :#,''i;;.',''. . ,.:,,,:i;::;::,::,.   ...'',;  .   ' .';,,!:::i;!,';;:::,,'';,;,!!iii,i;:,'','!:!i*+ii!=!i=*=*!; .. ..'''.   ''.,:ii:,:;:::::::,,.                 </pre>
   </div>
 
 </div>
@@ -387,66 +348,15 @@
 </div>
 
 <div class="bottom-bar">
-  <span>USER: glitchlabs</span>
-  <span>CLEARANCE: LEVEL 3</span>
-  <span>LINK: STABLE</span>
-  <span>UPTIME: <span id="uptime">47:21:19:82</span></span>
-  <span>NODE: DS-9-17</span>
-  <span>PROTOCOL: NT6-442A</span>
+  <span><span class="green">USER:</span> glitchlabs</span>
+  <span><span class="green">CLEARANCE:</span> LEVEL 3</span>
+  <span><span class="green">LINK:</span> STABLE</span>
+  <span><span class="green">UPTIME:</span> <span id="uptime">47:21:19:82</span></span>
+  <span><span class="green">NODE:</span> DS-9-17</span>
+  <span><span class="green">PROTOCOL:</span> NT6-442A</span>
 </div>
 
 <script>
-  function generateLandscape() {
-    const cols = 140;
-    const rows = 60;
-    let art = '';
-
-    const mountainHeights = [];
-    let h = 30;
-    for (let x = 0; x < cols; x++) {
-      h += (Math.random() - 0.5) * 4;
-      h = Math.max(15, Math.min(45, h));
-      mountainHeights[x] = Math.floor(h);
-    }
-
-    for (let y = 0; y < rows; y++) {
-      let row = '';
-      for (let x = 0; x < cols; x++) {
-        const mh = mountainHeights[x];
-        if (y < mh) {
-          row += Math.random() < 0.005 ? '.' : ' ';
-        } else if (y < mh + 2) {
-          row += Math.random() < 0.7 ? '▓' : '█';
-        } else if (y < mh + 6) {
-          const intensity = Math.random();
-          if (intensity < 0.3) row += '▒';
-          else if (intensity < 0.6) row += '▓';
-          else if (intensity < 0.85) row += '█';
-          else row += ' ';
-        } else if (y < rows - 8) {
-          const r = Math.random();
-          if (r < 0.15) row += '█';
-          else if (r < 0.3) row += '▓';
-          else if (r < 0.45) row += '▒';
-          else if (r < 0.55) row += '#';
-          else if (r < 0.65) row += '+';
-          else if (r < 0.75) row += ':';
-          else row += ' ';
-        } else {
-          const r = Math.random();
-          if (r < 0.4) row += '█';
-          else if (r < 0.7) row += '▓';
-          else if (r < 0.85) row += '▒';
-          else row += '#';
-        }
-      }
-      art += row + '\n';
-    }
-    return art;
-  }
-
-  document.getElementById('landscapeArt').textContent = generateLandscape();
-
   let baseSec = Math.floor(Math.random() * 1000) + 800;
   function updateTime() {
     baseSec++;
@@ -464,10 +374,10 @@
 
   const bootLines = document.querySelectorAll('.boot-overlay .boot-line');
   bootLines.forEach((line, i) => {
-    setTimeout(() => line.classList.add('on'), i * 250);
+    setTimeout(() => line.classList.add('on'), i * 280);
   });
 
-  const totalBootTime = bootLines.length * 250 + 600;
+  const totalBootTime = bootLines.length * 280 + 700;
   setTimeout(() => {
     document.getElementById('boot').classList.add('done');
 
