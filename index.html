@@ -1363,13 +1363,13 @@
     <div class="boot-line"><span class="label">&gt; LAB POWER:</span> <span class="ok">NOMINAL</span></div>
     <div class="boot-line"><span class="label">&gt; FABRICATION SYSTEMS:</span> <span class="ok">CALIBRATED</span></div>
     <div class="boot-line"><span class="label">&gt; DOSSIER ACCESS:</span> <span class="ok">UNLOCKED</span></div>
-    <div class="boot-line"><span class="label">&gt; OPERATOR ROSTER:</span> <span class="info">7 IDENTITIES // AUTHENTICATING...</span></div>
+    <div class="boot-line"><span class="label">&gt; OPERATOR ROSTER:</span> <span class="info">5 IDENTITIES // AUTHENTICATING...</span></div>
   </div>
 
   <div class="auth-stage" id="authStage">
     <div class="auth-label" id="authLabel">
       <span class="amber">▶</span> OPERATOR IDENTITY <span class="cyan">// SCANNING</span>
-      <span class="count" id="authCount">[ 1 / 7 ]</span>
+      <span class="count" id="authCount">[ 1 / 5 ]</span>
     </div>
 
     <div class="auth-name" id="authName"></div>
@@ -1928,16 +1928,13 @@
   const grantStamp = document.getElementById('grantStamp');
   const grantStack = document.getElementById('grantStack');
 
-  const names = ['
-', 'AYEEYO', 'ALI', 'AHMED', 'AWOOWO', 'IBTISSAM', 'DEKA'];
+  const names = ['ASIYA', 'ALI', 'AHMED', 'IBTISSAM', 'DEKA'];
   const roles = [
     'PRIMARY OPERATOR',
-    'KITCHEN OPERATOR',
     'SECONDARY OPERATOR',
     'TERTIARY OPERATOR',
-     'DONUT OPERATOR',
     'RESEARCH OPERATOR',
-    'RESEARCH OPERATOR',
+    'RESEARCH OPERATOR'
   ];
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
